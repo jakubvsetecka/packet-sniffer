@@ -3,7 +3,7 @@ CXXFLAGS=-Wall -std=c++20 -Wextra -Wshadow -Wnon-virtual-dtor -Wcast-align -Wove
 INCLUDES=-I./src/headers
 SRC=$(wildcard ./src/*.cpp)
 OBJ=$(SRC:.cpp=.o)
-TARGET=./bin/ipk-sniffer
+TARGET=ipk-sniffer
 
 all: $(TARGET)
 

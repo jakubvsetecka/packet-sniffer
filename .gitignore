@@ -3,7 +3,7 @@
 *.d
 
 # Binary
-bin/
+ipk-sniffer
 
 # Compiled Object files
 *.slo
