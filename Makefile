@@ -1,17 +1,27 @@
 CXX=g++
-CXXFLAGS=-Wall -std=c++20 -Wextra -Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -fstack-protector-all -fsanitize=address -fsanitize=undefined
+CXXFLAGS=-Wall -std=c++20 #-Wextra -Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -fstack-protector-all -fsanitize=address -fsanitize=undefined
 INCLUDES=-I./src/headers
+LIBS=-lpcap
 SRC=$(wildcard ./src/*.cpp)
 OBJ=$(SRC:.cpp=.o)
+DEPS=$(OBJ:.o=.d)  # Dependency files for header changes
 TARGET=ipk-sniffer
 
 all: $(TARGET)
 
-$(TARGET): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(OBJ) -o $@
+# Include dependency files if they exist
+-include $(DEPS)
 
-.cpp.o:
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(OBJ) $(LIBS) -o $@
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
+
+pack:
+	zip -r xvsete00.zip src/ Makefile README.md CHANGELOG.md
 
 clean:
-	rm -f $(SRC:.cpp=.o) $(TARGET)
+	rm -f $(OBJ) $(DEPS) $(TARGET) xvsete00.zip
+
+.PHONY: all pack clean
