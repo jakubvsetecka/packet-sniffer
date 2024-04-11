@@ -1,0 +1,11 @@
+{
+  "auto-run-command.rules": [
+      {
+          "name": "Initialize Nix Shell",
+          "condition": "always",
+          "command": "workbench.action.tasks.runTask",
+          "commandArgs": "Setup Nix Environment",
+          "runIn": "terminal"
+      }
+  ]
+}
