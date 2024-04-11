@@ -4,7 +4,7 @@
         {
             "label": "Setup Nix Environment",
             "type": "shell",
-            "command": "nix develop \"git+https://git.fit.vutbr.cz/NESFIT/dev-envs.git?dir=ipk#c\"",
+            "command": "nix develop ./dev-envs/ipk#c",
             "group": {
                 "kind": "build",
                 "isDefault": true
