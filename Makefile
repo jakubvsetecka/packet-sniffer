@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-Wall -std=c++20 #-Wextra -Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -fstack-protector-all -fsanitize=address -fsanitize=undefined
+CXXFLAGS=-Wall -std=c++20 -g #-Wextra -Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -fstack-protector-all -fsanitize=address -fsanitize=undefined
 INCLUDES=-I./src/headers
 LIBS=-lpcap
 SRC=$(wildcard ./src/*.cpp)

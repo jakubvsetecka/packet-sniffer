@@ -17,6 +17,24 @@
                 "clear": false
             },
             "problemMatcher": []
+        },
+        {
+            "label": "make build",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                // Add any make arguments here
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}" // Ensures 'make' runs in the right directory
+            }
         }
     ]
 }
