@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/header"
+            ],
+            "defines": [],
+            "compilerPath": "/nix/store/p36fspjarx2fg3fnssbc3b602im9hld4-clang-wrapper-16.0.6/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

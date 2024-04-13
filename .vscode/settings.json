@@ -1,11 +1,21 @@
 {
-  "auto-run-command.rules": [
-      {
-          "name": "Initialize Nix Shell",
-          "condition": "always",
-          "command": "workbench.action.tasks.runTask",
-          "commandArgs": "Setup Nix Environment",
-          "runIn": "terminal"
-      }
-  ]
+    "auto-run-command.rules": [
+        {
+            "name": "Initialize Nix Shell",
+            "condition": "always",
+            "command": "workbench.action.tasks.runTask",
+            "commandArgs": "Setup Nix Environment",
+            "runIn": "terminal"
+        }
+    ],
+    "files.associations": {
+        "condition_variable": "cpp",
+        "ratio": "cpp",
+        "system_error": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
+    }
 }
