@@ -13,7 +13,7 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "miDebuggerPath": "${workspaceFolder}/sudo-gdb.sh",
-            "preLaunchTask": "make build", // This should match the label of the build task in tasks.json
+            "preLaunchTask": "preLaunch", // This should match the label of the build task in tasks.json
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",

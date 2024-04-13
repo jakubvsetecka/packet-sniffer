@@ -35,6 +35,28 @@
             "options": {
                 "cwd": "${workspaceFolder}" // Ensures 'make' runs in the right directory
             }
+        },
+        {
+            "label": "askForArguments",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                "${input:debugArgs}"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "preLaunch",
+            "dependsOn": ["make build", "askForArguments"],
+            "dependsOrder": "sequence"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "debugArgs",
+            "type": "promptString",
+            "description": "Enter debug arguments:",
+            "default": "--interface eth0" // provide a default or example structure
         }
     ]
 }
