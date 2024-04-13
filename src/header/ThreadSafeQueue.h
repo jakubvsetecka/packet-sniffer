@@ -1,4 +1,11 @@
-// ThreadSafeQueue.h
+/**
+ * @file ThreadSafeQueue.h
+ * @brief Thread safe queue
+ * @version 0.1
+ * @date 13/04/2024
+ * @author Jakub Všetečka
+ */
+
 #ifndef THREAD_SAFE_QUEUE_H
 #define THREAD_SAFE_QUEUE_H
 
@@ -26,6 +33,12 @@ class ThreadSafeQueue {
     ThreadSafeQueue(const ThreadSafeQueue<T> &) = delete;
     ThreadSafeQueue &operator=(const ThreadSafeQueue<T> &) = delete;
 
+    /**
+     * @brief Push an element to the queue
+     *
+     * @param value
+     * @return void
+     */
     void push(T value) {
         std::lock_guard<std::mutex> lock(mtx);
         queue.push(std::move(value));
