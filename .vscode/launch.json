@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ipk-sniffer",
-            "args": [], // Any arguments your program needs
+            "args": ["--interface"], // Any arguments your program needs
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
