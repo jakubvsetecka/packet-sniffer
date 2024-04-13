@@ -13,10 +13,10 @@
 #include <pcap.h>
 
 ArgumentParser::ArgumentParser()
-    : port(0), tcp(false), udp(false), arp(false), icmp4(false), icmp6(false), igmp(false), mld(false), numPackets(1) {}
+    : port(0), tcp(false), udp(false), ndp(false), arp(false), icmp4(false), icmp6(false), igmp(false), mld(false), numPackets(1) {}
 
 void ArgumentParser::parse(int argc, char *argv[]) {
-    const char *const short_opts = "ip:tun:";
+    const char *const short_opts = "i::p:tun:";
     const option long_opts[] = {
         {"interface", optional_argument, nullptr, 'i'},
         {"port-source", required_argument, nullptr, 'p'},
@@ -41,10 +41,12 @@ void ArgumentParser::parse(int argc, char *argv[]) {
         switch (opt) {
         case 'i':
             if (optarg) {
-                interface = optarg;
+                interface = optarg; // Interface argument provided
             } else {
-                interface = "";
+                interface = "default_interface"; // No interface argument provided, use a default value or leave it empty
             }
+            std::cout << "DEBUG: optarg value: " << (optarg ? optarg : "nullptr") << std::endl;
+            std::cout << "DEBUG: Interface: " << interface << std::endl;
             break;
         case 'p':
             port = std::stoi(optarg);
