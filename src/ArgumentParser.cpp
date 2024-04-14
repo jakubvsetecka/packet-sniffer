@@ -7,6 +7,7 @@
  */
 
 #include "ArgumentParser.h"
+#include "ProtoType.h"
 #include <cstdlib>
 #include <getopt.h>
 #include <iostream>
@@ -14,14 +15,14 @@
 
 ArgumentParser::ArgumentParser()
     : port(-1), t_portType(PortType::ANY), numPackets(1) {
-    protocols = {{"TCP", false},
-                 {"UDP", false},
-                 {"ARP", false},
-                 {"NDP", false},
-                 {"ICMPv4", false},
-                 {"ICMPv6", false},
-                 {"IGMP", false},
-                 {"MLD", false}};
+    protocols = {{ProtoType::TCP, false},
+                 {ProtoType::UDP, false},
+                 {ProtoType::ARP, false},
+                 {ProtoType::NDP, false},
+                 {ProtoType::ICMP4, false},
+                 {ProtoType::ICMP6, false},
+                 {ProtoType::IGMP, false},
+                 {ProtoType::MLD, false}};
 }
 
 void ArgumentParser::usage() const {
@@ -81,28 +82,28 @@ void ArgumentParser::parse(int argc, char *argv[]) {
             t_portType = PortType::DESTINATION;
             break;
         case 't':
-            protocols["TCP"] = true;
+            protocols[ProtoType::TCP] = true;
             break;
         case 'u':
-            protocols["UDP"] = true;
+            protocols[ProtoType::UDP] = true;
             break;
         case 'a':
-            protocols["ARP"] = true;
+            protocols[ProtoType::ARP] = true;
             break;
         case 'd':
-            protocols["NDP"] = true;
+            protocols[ProtoType::NDP] = true;
             break;
         case '4':
-            protocols["ICMP4"] = true;
+            protocols[ProtoType::ICMP4] = true;
             break;
         case '6':
-            protocols["ICMP6"] = true;
+            protocols[ProtoType::ICMP6] = true;
             break;
         case 'g':
-            protocols["IGMP"] = true;
+            protocols[ProtoType::IGMP] = true;
             break;
         case 'm':
-            protocols["MLD"] = true;
+            protocols[ProtoType::MLD] = true;
             break;
         case 'n':
             numPackets = std::stoi(optarg);
@@ -128,7 +129,7 @@ void ArgumentParser::parse(int argc, char *argv[]) {
 }
 
 void ArgumentParser::validateArguments() const {
-    if (interface.empty() && port == 0 && areAllProtocolsDisabled(protocols) && numPackets == 1) {
+    if (interface.empty() && port == 0 && areAllProtocolsDisabled() && numPackets == 1) {
         listNetworkInterfaces();
     } else if (interface.empty()) {
         usage();
@@ -136,7 +137,7 @@ void ArgumentParser::validateArguments() const {
     }
 }
 
-bool ArgumentParser::areAllProtocolsDisabled(const std::unordered_map<std::string, bool> &protocols) const {
+bool ArgumentParser::areAllProtocolsDisabled() const {
     for (const auto &pair : protocols) {
         if (pair.second) { // Check if any protocol is enabled
             return false;
@@ -176,7 +177,7 @@ void ArgumentParser::displayConfig() const {
     std::cout << "Protocols: ";
     for (const auto &pair : protocols) {
         if (pair.second) {
-            std::cout << pair.first << " ";
+            std::cout << toString(pair.first) << " ";
         }
     }
     std::cout << std::endl;

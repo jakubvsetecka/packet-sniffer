@@ -10,6 +10,7 @@
 #define ARGUMENT_PARSER_H
 
 #include "PortType.h"
+#include "ProtoType.h"
 #include <string>
 #include <unordered_map>
 
@@ -70,7 +71,7 @@ class ArgumentParser {
      *
      * @return std::unordered_map<std::string, bool>
      */
-    std::unordered_map<std::string, bool> getProtocols() const { return protocols; }
+    std::unordered_map<ProtoType, bool> getProtocols() const { return protocols; }
 
     /**
      * @brief Get the number of packets
@@ -81,9 +82,10 @@ class ArgumentParser {
 
   private:
     std::string interface;
+
     int port;
     PortType t_portType;
-    std::unordered_map<std::string, bool> protocols;
+    std::unordered_map<ProtoType, bool> protocols;
     int numPackets;
 
     /**
@@ -96,10 +98,9 @@ class ArgumentParser {
     /**
      * @brief Check if all protocols are disabled
      *
-     * @param protocols
      * @return bool
      */
-    bool areAllProtocolsDisabled(const std::unordered_map<std::string, bool> &protocols) const;
+    bool areAllProtocolsDisabled() const;
 
     /**
      * @brief List the network interfaces
