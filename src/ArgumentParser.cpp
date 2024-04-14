@@ -16,9 +16,9 @@ ArgumentParser::ArgumentParser()
     : port(0), tcp(false), udp(false), ndp(false), arp(false), icmp4(false), icmp6(false), igmp(false), mld(false), numPackets(1) {}
 
 void ArgumentParser::parse(int argc, char *argv[]) {
-    const char *const short_opts = "i::p:tun:";
+    const char *const short_opts = ":i:p:tun:";
     const option long_opts[] = {
-        {"interface", optional_argument, nullptr, 'i'},
+        {"interface", required_argument, nullptr, 'i'},
         {"port-source", required_argument, nullptr, 'p'},
         {"port-destination", required_argument, nullptr, 'p'},
         {"tcp", no_argument, nullptr, 't'},
@@ -40,13 +40,7 @@ void ArgumentParser::parse(int argc, char *argv[]) {
 
         switch (opt) {
         case 'i':
-            if (optarg) {
-                interface = optarg; // Interface argument provided
-            } else {
-                interface = "default_interface"; // No interface argument provided, use a default value or leave it empty
-            }
-            std::cout << "DEBUG: optarg value: " << (optarg ? optarg : "nullptr") << std::endl;
-            std::cout << "DEBUG: Interface: " << interface << std::endl;
+            interface = optarg;
             break;
         case 'p':
             port = std::stoi(optarg);
@@ -77,6 +71,11 @@ void ArgumentParser::parse(int argc, char *argv[]) {
             break;
         case 'n':
             numPackets = std::stoi(optarg);
+            break;
+        case ':': // Missing argument
+            if (optopt == 'i') {
+                interface = "";
+            }
             break;
         case '?': // Unrecognized option
         default:
