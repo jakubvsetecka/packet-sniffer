@@ -15,8 +15,25 @@
 ArgumentParser::ArgumentParser()
     : port(0), tcp(false), udp(false), ndp(false), arp(false), icmp4(false), icmp6(false), igmp(false), mld(false), numPackets(1) {}
 
+void ArgumentParser::usage() const {
+    std::cout << "Usage: ./program [options]\n"
+              << "Options:\n"
+              << "  -i, --interface <interface>  Network interface\n"
+              << "  -p, --port <port>            Port number\n"
+              << "  -t, --tcp                    TCP protocol\n"
+              << "  -u, --udp                    UDP protocol\n"
+              << "  --arp                        ARP protocol\n"
+              << "  --ndp                        NDP protocol\n"
+              << "  --icmp4                      ICMPv4 protocol\n"
+              << "  --icmp6                      ICMPv6 protocol\n"
+              << "  --igmp                       IGMP protocol\n"
+              << "  --mld                        MLD protocol\n"
+              << "  -n <number>                  Number of packets\n"
+              << "  -h, --help                   Display this help message\n";
+}
+
 void ArgumentParser::parse(int argc, char *argv[]) {
-    const char *const short_opts = ":i:p:tun:";
+    const char *const short_opts = ":i:p:tun:h";
     const option long_opts[] = {
         {"interface", required_argument, nullptr, 'i'},
         {"port-source", required_argument, nullptr, 'p'},
@@ -30,6 +47,7 @@ void ArgumentParser::parse(int argc, char *argv[]) {
         {"igmp", no_argument, nullptr, 'g'},
         {"mld", no_argument, nullptr, 'm'},
         {"n", required_argument, nullptr, 'n'},
+        {"help", no_argument, nullptr, 'h'},
         {nullptr, no_argument, nullptr, 0}};
 
     while (true) {
@@ -72,15 +90,20 @@ void ArgumentParser::parse(int argc, char *argv[]) {
         case 'n':
             numPackets = std::stoi(optarg);
             break;
+        case 'h': // -h or --help
+            usage();
+            exit(EXIT_SUCCESS);
         case ':': // Missing argument
             if (optopt == 'i') {
                 interface = "";
+            } else {
+                throw std::invalid_argument("Missing argument");
             }
             break;
         case '?': // Unrecognized option
         default:
-            std::cerr << "Usage: " << argv[0] << " [options]\n";
-            exit(EXIT_FAILURE);
+            usage();
+            throw std::invalid_argument("Unrecognized option");
         }
     }
 
@@ -88,9 +111,12 @@ void ArgumentParser::parse(int argc, char *argv[]) {
 }
 
 void ArgumentParser::validateArguments() const {
-    if (interface.empty() && port == 0 && !tcp && !udp && !arp && !icmp4 && !icmp6 && !igmp && !mld && numPackets == 1) {
+    if (interface.empty() && port == 0 && !tcp && !udp && !ndp && !arp && !icmp4 && !icmp6 && !igmp && !mld && numPackets == 1) {
         std::cout << "No specific options provided." << std::endl;
         listNetworkInterfaces();
+    } else if (interface.empty()) {
+        usage();
+        throw std::invalid_argument("Interface is required");
     }
 }
 
@@ -123,6 +149,7 @@ void ArgumentParser::displayConfig() const {
     std::cout << "Port: " << (port ? std::to_string(port) : "Any") << std::endl;
     std::cout << "TCP: " << (tcp ? "Yes" : "No") << std::endl;
     std::cout << "UDP: " << (udp ? "Yes" : "No") << std::endl;
+    std::cout << "NDP: " << (ndp ? "Yes" : "No") << std::endl;
     std::cout << "ARP: " << (arp ? "Yes" : "No") << std::endl;
     std::cout << "ICMPv4: " << (icmp4 ? "Yes" : "No") << std::endl;
     std::cout << "ICMPv6: " << (icmp6 ? "Yes" : "No") << std::endl;

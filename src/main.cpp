@@ -9,10 +9,16 @@
  */
 
 #include "ArgumentParser.h"
+#include <iostream>
 
 int main(int argc, char *argv[]) {
-    ArgumentParser parser;
-    parser.parse(argc, argv);
-    parser.displayConfig();
-    return 0;
+    try {
+        ArgumentParser parser;
+        parser.parse(argc, argv);
+        parser.displayConfig();
+        return 0;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
 }

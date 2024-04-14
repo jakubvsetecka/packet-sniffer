@@ -21,6 +21,13 @@ class ArgumentParser {
     ArgumentParser();
 
     /**
+     * @brief Display the usage
+     *
+     * @return void
+     */
+    void usage() const;
+
+    /**
      * @brief Parse the arguments
      *
      * @param argc
