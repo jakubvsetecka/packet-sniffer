@@ -6,14 +6,14 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ipk-sniffer",
-            "args": ["--interface"], // Any arguments your program needs
+            "args": ["${input:debugArgs}"], // This uses the debug arguments input directly
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "${workspaceFolder}/sudo-gdb.sh",
-            "preLaunchTask": "preLaunch", // This should match the label of the build task in tasks.json
+            "miDebuggerPath": "${workspaceFolder}/sudo-gdb.sh", // Use the custom sudo gdb script
+            "preLaunchTask": "make build", // Ensure your build task is correct
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
@@ -22,6 +22,14 @@
                 }
             ],
             "internalConsoleOptions": "openOnSessionStart"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "debugArgs",
+            "type": "promptString",
+            "description": "Enter debug arguments:",
+            "default": "--interface eth0"
         }
     ]
 }
