@@ -11,6 +11,7 @@
 
 #include <condition_variable>
 #include <exception>
+#include <iostream>
 #include <mutex>
 #include <queue>
 
@@ -92,6 +93,21 @@ class ThreadSafeQueue {
     size_t size() const {
         std::lock_guard<std::mutex> lock(mtx);
         return queue.size();
+    }
+
+    /**
+     * @brief Print the queue
+     *
+     * @return void
+     */
+    void print() {
+        std::lock_guard<std::mutex> lock(mtx);
+        std::queue<T> tempQueue = queue;
+        while (!tempQueue.empty()) {
+            T &value = tempQueue.front();
+            std::cout << value << std::endl;
+            tempQueue.pop();
+        }
     }
 };
 
