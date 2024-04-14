@@ -10,7 +10,9 @@
 #define PACKET_SNIFFER_H
 
 #include "PortType.h"
+#include "ProtoType.h"
 #include "ThreadSafeQueue.h"
+#include <map>
 #include <pcap.h>
 #include <string>
 #include <unordered_map>
@@ -53,19 +55,14 @@ class PacketSniffer {
     /**
      * @brief Constructor
      */
-    PacketSniffer(const std::string &device, ThreadSafeQueue<PacketData> *queue, const std::unordered_map<std::string, bool> &protocols, int numPackets, int port, PortType t_portType);
+    PacketSniffer(const std::string &deviceArg, ThreadSafeQueue<PacketData> *queueArg,
+                  const std::unordered_map<ProtoType, bool> &protocolsArg, int numPacketsArg,
+                  int portArg, PortType t_portTypeArg);
 
     /**
      * @brief Destructor
      */
     ~PacketSniffer();
-
-    /**
-     * @brief Apply a filter
-     *
-     * @return void
-     */
-    void applyFilter(); // TODO
 
     /**
      * @brief Start capturing packets
@@ -76,12 +73,30 @@ class PacketSniffer {
 
   private:
     pcap_t *handle;
-    ThreadSafeQueue<PacketData> *queue;
     std::string device;
-    std::unordered_map<std::string, bool> protocols;
+    ThreadSafeQueue<PacketData> *queue;
+    std::unordered_map<ProtoType, bool> protocols;
     int numPackets;
     int port;
     PortType t_portType;
+    const std::map<ProtoType, std::string> protoToFilter = {
+        {ProtoType::TCP, "tcp"},
+        {ProtoType::UDP, "udp"},
+        {ProtoType::ICMP4, "icmp"},
+        {ProtoType::ICMP6, "icmp6"},
+        {ProtoType::ARP, "arp"},
+        {ProtoType::NDP, "ndp"},
+        {ProtoType::IGMP, "igmp"},
+        {ProtoType::MLD, "mld"}};
+
+    /**
+     * @brief Create a filter
+     *
+     * @param filter    Filter string
+     *
+     * @return std::string
+     */
+    std::string createFilter();
 
     /**
      * @brief Packet handler
