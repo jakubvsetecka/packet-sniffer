@@ -11,13 +11,13 @@
 #include <iostream>
 #include <pcap.h>
 
-PacketSniffer::PacketSniffer(const std::string &device, ThreadSafeQueue<PacketData> *queue) {
+PacketSniffer::PacketSniffer(const std::string &device, ThreadSafeQueue<PacketData> *queue, const std::unordered_map<std::string, bool> &protocols, int numPackets, int port, PortType t_portType)
+    : handle(nullptr), device(device), queue(queue), protocols(protocols), numPackets(numPackets), port(port), t_portType(t_portType) {
     char errbuf[PCAP_ERRBUF_SIZE];
     handle = pcap_open_live(device.c_str(), BUFSIZ, 1, 1000, errbuf);
     if (handle == nullptr) {
         throw std::runtime_error("pcap_open_live failed: " + std::string(errbuf));
     }
-    this->queue = queue;
 }
 
 PacketSniffer::~PacketSniffer() {

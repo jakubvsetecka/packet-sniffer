@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
         parser.parse(argc, argv);
         parser.displayConfig();
         ThreadSafeQueue<PacketSniffer::PacketData> queue;
-        PacketSniffer sniffer("eth0", &queue);
+        PacketSniffer sniffer("eth0", &queue, parser.getProtocols(), parser.getNumPackets(), parser.getPort(), parser.getPortType());
         sniffer.startCapture();
         std::cout << "Captured " << queue.size() << " packets" << std::endl;
         queue.print();

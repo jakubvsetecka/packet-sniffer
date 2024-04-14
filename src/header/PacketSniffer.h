@@ -9,6 +9,7 @@
 #ifndef PACKET_SNIFFER_H
 #define PACKET_SNIFFER_H
 
+#include "PortType.h"
 #include "ThreadSafeQueue.h"
 #include <pcap.h>
 #include <string>
@@ -52,7 +53,7 @@ class PacketSniffer {
     /**
      * @brief Constructor
      */
-    PacketSniffer(const std::string &device, ThreadSafeQueue<PacketData> *queue);
+    PacketSniffer(const std::string &device, ThreadSafeQueue<PacketData> *queue, const std::unordered_map<std::string, bool> &protocols, int numPackets, int port, PortType t_portType);
 
     /**
      * @brief Destructor
@@ -76,6 +77,11 @@ class PacketSniffer {
   private:
     pcap_t *handle;
     ThreadSafeQueue<PacketData> *queue;
+    std::string device;
+    std::unordered_map<std::string, bool> protocols;
+    int numPackets;
+    int port;
+    PortType t_portType;
 
     /**
      * @brief Packet handler
