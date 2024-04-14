@@ -18,6 +18,12 @@
  */
 class ArgumentParser {
   public:
+    enum class portType { SOURCE,
+                          DESTINATION,
+                          ANY };
+
+    std::string toString(portType t) const;
+
     ArgumentParser();
 
     /**
@@ -46,7 +52,8 @@ class ArgumentParser {
   private:
     std::string interface;
     int port;
-    bool tcp, udp, ndp, arp, icmp4, icmp6, igmp, mld;
+    portType t_portType;
+    std::unordered_map<std::string, bool> protocols;
     int numPackets;
 
     /**
@@ -55,6 +62,14 @@ class ArgumentParser {
      * @return void
      */
     void validateArguments() const;
+
+    /**
+     * @brief Check if all protocols are disabled
+     *
+     * @param protocols
+     * @return bool
+     */
+    bool areAllProtocolsDisabled(const std::unordered_map<std::string, bool> &protocols) const;
 
     /**
      * @brief List the network interfaces

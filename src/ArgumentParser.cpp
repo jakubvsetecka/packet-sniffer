@@ -12,8 +12,30 @@
 #include <iostream>
 #include <pcap.h>
 
+std::string ArgumentParser::toString(portType t) const {
+    switch (t) {
+    case portType::SOURCE:
+        return "Source";
+    case portType::DESTINATION:
+        return "Destination";
+    case portType::ANY:
+        return "Any";
+    default:
+        return "Unknown";
+    }
+}
+
 ArgumentParser::ArgumentParser()
-    : port(0), tcp(false), udp(false), ndp(false), arp(false), icmp4(false), icmp6(false), igmp(false), mld(false), numPackets(1) {}
+    : port(-1), t_portType(portType::ANY), numPackets(1) {
+    protocols = {{"TCP", false},
+                 {"UDP", false},
+                 {"ARP", false},
+                 {"NDP", false},
+                 {"ICMPv4", false},
+                 {"ICMPv6", false},
+                 {"IGMP", false},
+                 {"MLD", false}};
+}
 
 void ArgumentParser::usage() const {
     std::cout << "Usage: ./program [options]\n"
@@ -36,8 +58,8 @@ void ArgumentParser::parse(int argc, char *argv[]) {
     const char *const short_opts = ":i:p:tun:h";
     const option long_opts[] = {
         {"interface", required_argument, nullptr, 'i'},
-        {"port-source", required_argument, nullptr, 'p'},
-        {"port-destination", required_argument, nullptr, 'p'},
+        {"port-source", required_argument, nullptr, '1'},
+        {"port-destination", required_argument, nullptr, '2'},
         {"tcp", no_argument, nullptr, 't'},
         {"udp", no_argument, nullptr, 'u'},
         {"arp", no_argument, nullptr, 'a'},
@@ -63,29 +85,37 @@ void ArgumentParser::parse(int argc, char *argv[]) {
         case 'p':
             port = std::stoi(optarg);
             break;
+        case '1':
+            port = std::stoi(optarg);
+            t_portType = portType::SOURCE;
+            break;
+        case '2':
+            port = std::stoi(optarg);
+            t_portType = portType::DESTINATION;
+            break;
         case 't':
-            tcp = true;
+            protocols["TCP"] = true;
             break;
         case 'u':
-            udp = true;
+            protocols["UDP"] = true;
             break;
         case 'a':
-            arp = true;
+            protocols["ARP"] = true;
             break;
         case 'd':
-            ndp = true;
+            protocols["NDP"] = true;
             break;
         case '4':
-            icmp4 = true;
+            protocols["ICMP4"] = true;
             break;
         case '6':
-            icmp6 = true;
+            protocols["ICMP6"] = true;
             break;
         case 'g':
-            igmp = true;
+            protocols["IGMP"] = true;
             break;
         case 'm':
-            mld = true;
+            protocols["MLD"] = true;
             break;
         case 'n':
             numPackets = std::stoi(optarg);
@@ -111,13 +141,21 @@ void ArgumentParser::parse(int argc, char *argv[]) {
 }
 
 void ArgumentParser::validateArguments() const {
-    if (interface.empty() && port == 0 && !tcp && !udp && !ndp && !arp && !icmp4 && !icmp6 && !igmp && !mld && numPackets == 1) {
-        std::cout << "No specific options provided." << std::endl;
+    if (interface.empty() && port == 0 && areAllProtocolsDisabled(protocols) && numPackets == 1) {
         listNetworkInterfaces();
     } else if (interface.empty()) {
         usage();
         throw std::invalid_argument("Interface is required");
     }
+}
+
+bool ArgumentParser::areAllProtocolsDisabled(const std::unordered_map<std::string, bool> &protocols) const {
+    for (const auto &pair : protocols) {
+        if (pair.second) { // Check if any protocol is enabled
+            return false;
+        }
+    }
+    return true;
 }
 
 void ArgumentParser::listNetworkInterfaces() const {
@@ -147,13 +185,13 @@ void ArgumentParser::listNetworkInterfaces() const {
 void ArgumentParser::displayConfig() const {
     std::cout << "Interface: " << (interface.empty() ? "Any" : interface) << std::endl;
     std::cout << "Port: " << (port ? std::to_string(port) : "Any") << std::endl;
-    std::cout << "TCP: " << (tcp ? "Yes" : "No") << std::endl;
-    std::cout << "UDP: " << (udp ? "Yes" : "No") << std::endl;
-    std::cout << "NDP: " << (ndp ? "Yes" : "No") << std::endl;
-    std::cout << "ARP: " << (arp ? "Yes" : "No") << std::endl;
-    std::cout << "ICMPv4: " << (icmp4 ? "Yes" : "No") << std::endl;
-    std::cout << "ICMPv6: " << (icmp6 ? "Yes" : "No") << std::endl;
-    std::cout << "IGMP: " << (igmp ? "Yes" : "No") << std::endl;
-    std::cout << "MLD: " << (mld ? "Yes" : "No") << std::endl;
+    std::cout << "PortType: " << toString(t_portType) << std::endl;
+    std::cout << "Protocols: ";
+    for (const auto &pair : protocols) {
+        if (pair.second) {
+            std::cout << pair.first << " ";
+        }
+    }
+    std::cout << std::endl;
     std::cout << "Number of Packets: " << numPackets << std::endl;
 }
