@@ -9,6 +9,7 @@
 #ifndef ARGUMENT_PARSER_H
 #define ARGUMENT_PARSER_H
 
+#include "PortType.h"
 #include <string>
 #include <unordered_map>
 
@@ -18,12 +19,6 @@
  */
 class ArgumentParser {
   public:
-    enum class portType { SOURCE,
-                          DESTINATION,
-                          ANY };
-
-    std::string toString(portType t) const;
-
     ArgumentParser();
 
     /**
@@ -49,10 +44,45 @@ class ArgumentParser {
      */
     void displayConfig() const;
 
+    /**
+     * @brief Get the interface
+     *
+     * @return std::string
+     */
+    std::string getInterface() const { return interface; }
+
+    /**
+     * @brief Get the port
+     *
+     * @return int
+     */
+    int getPort() const { return port; }
+
+    /**
+     * @brief Get the port type
+     *
+     * @return PortType
+     */
+    PortType getPortType() const { return t_portType; }
+
+    /**
+     * @brief Get the protocols
+     *
+     * @return std::unordered_map<std::string, bool>
+     */
+    std::unordered_map<std::string, bool> getProtocols() const { return protocols; }
+
+    /**
+     * @brief Get the number of packets
+     *
+     * @return int
+     */
+    int getNumPackets() const { return numPackets; }
+
   private:
     std::string interface;
     int port;
-    portType t_portType;
+    PortType t_portType;
     std::unordered_map<std::string, bool> protocols;
     int numPackets;
 

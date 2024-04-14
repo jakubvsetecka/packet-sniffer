@@ -12,21 +12,8 @@
 #include <iostream>
 #include <pcap.h>
 
-std::string ArgumentParser::toString(portType t) const {
-    switch (t) {
-    case portType::SOURCE:
-        return "Source";
-    case portType::DESTINATION:
-        return "Destination";
-    case portType::ANY:
-        return "Any";
-    default:
-        return "Unknown";
-    }
-}
-
 ArgumentParser::ArgumentParser()
-    : port(-1), t_portType(portType::ANY), numPackets(1) {
+    : port(-1), t_portType(PortType::ANY), numPackets(1) {
     protocols = {{"TCP", false},
                  {"UDP", false},
                  {"ARP", false},
@@ -87,11 +74,11 @@ void ArgumentParser::parse(int argc, char *argv[]) {
             break;
         case '1':
             port = std::stoi(optarg);
-            t_portType = portType::SOURCE;
+            t_portType = PortType::SOURCE;
             break;
         case '2':
             port = std::stoi(optarg);
-            t_portType = portType::DESTINATION;
+            t_portType = PortType::DESTINATION;
             break;
         case 't':
             protocols["TCP"] = true;
