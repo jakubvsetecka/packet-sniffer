@@ -9,6 +9,7 @@
 #ifndef PACKET_SNIFFER_H
 #define PACKET_SNIFFER_H
 
+#include "../wrappers/IPCAPWrapper.h"
 #include "IPCAPWrapper.h"
 #include "PortType.h"
 #include "ProtoType.h"
@@ -22,6 +23,7 @@
  *
  */
 class PacketSniffer {
+    friend class PacketSnifferTest; // Grant the test class access to private members
   public:
     /**
      * @brief Packet data
@@ -69,7 +71,7 @@ class PacketSniffer {
      */
     void startCapture();
 
-  private:
+  protected:
     IPCAPWrapper *pcapWrapper;
     pcap_t *handle;
     std::string device;
