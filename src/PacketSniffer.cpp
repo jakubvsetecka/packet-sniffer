@@ -9,19 +9,18 @@
 #include "PacketSniffer.h"
 #include <cstring>
 #include <iostream>
-#include <pcap.h>
 #include <sstream>
 
 // Constructor Definition
-PacketSniffer::PacketSniffer(const std::string &deviceArg, ThreadSafeQueue<PacketData> *queueArg,
+PacketSniffer::PacketSniffer(IPCAPWrapper *pcapWrapperArg, const std::string &deviceArg, ThreadSafeQueue<PacketData> *queueArg,
                              const std::unordered_map<ProtoType, bool> &protocolsArg, int numPacketsArg,
                              int portArg, PortType t_portTypeArg)
-    : device(deviceArg), queue(queueArg), protocols(protocolsArg),
+    : pcapWrapper(pcapWrapperArg), device(deviceArg), queue(queueArg), protocols(protocolsArg),
       numPackets(numPacketsArg), port(portArg), t_portType(t_portTypeArg) {
     char errbuf[PCAP_ERRBUF_SIZE];
 
     // Open session
-    handle = pcap_open_live(device.c_str(), BUFSIZ, 1, 1000, errbuf);
+    handle = pcapWrapper->open_live(device.c_str(), BUFSIZ, 1, 1000, errbuf);
     if (handle == nullptr) {
         throw std::runtime_error("pcap_open_live failed: " + std::string(errbuf));
     }
@@ -30,20 +29,20 @@ PacketSniffer::PacketSniffer(const std::string &deviceArg, ThreadSafeQueue<Packe
     std::string filter = createFilter();
     struct bpf_program fp;
 
-    // Compile
-    if (pcap_compile(handle, &fp, filter.c_str(), 0, PCAP_NETMASK_UNKNOWN) == -1) {
+    // Compile Filter
+    if (pcapWrapper->compile(handle, &fp, filter.c_str(), 0, PCAP_NETMASK_UNKNOWN) == -1) {
         throw std::runtime_error("pcap_compile failed: " + std::string(pcap_geterr(handle)));
     }
 
-    // Set
-    if (pcap_setfilter(handle, &fp) == -1) {
+    // Set Filter
+    if (pcapWrapper->setfilter(handle, &fp) == -1) {
         throw std::runtime_error("pcap_setfilter failed: " + std::string(pcap_geterr(handle)));
     }
 }
 
 PacketSniffer::~PacketSniffer() {
     if (handle) {
-        pcap_close(handle);
+        pcapWrapper->close(handle);
     }
 }
 
@@ -91,7 +90,7 @@ std::string PacketSniffer::createFilter() {
 }
 
 void PacketSniffer::startCapture() {
-    pcap_loop(handle, numPackets, PacketSniffer::packetHandlerStatic, reinterpret_cast<u_char *>(this));
+    pcapWrapper->loop(handle, numPackets, PacketSniffer::packetHandlerStatic, reinterpret_cast<u_char *>(this));
 }
 
 void PacketSniffer::packetHandlerStatic(u_char *userData, const struct pcap_pkthdr *header, const u_char *packet) {

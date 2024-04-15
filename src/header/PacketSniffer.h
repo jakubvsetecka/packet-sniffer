@@ -9,11 +9,11 @@
 #ifndef PACKET_SNIFFER_H
 #define PACKET_SNIFFER_H
 
+#include "IPCAPWrapper.h"
 #include "PortType.h"
 #include "ProtoType.h"
 #include "ThreadSafeQueue.h"
 #include <map>
-#include <pcap.h>
 #include <string>
 #include <unordered_map>
 
@@ -55,9 +55,7 @@ class PacketSniffer {
     /**
      * @brief Constructor
      */
-    PacketSniffer(const std::string &deviceArg, ThreadSafeQueue<PacketData> *queueArg,
-                  const std::unordered_map<ProtoType, bool> &protocolsArg, int numPacketsArg,
-                  int portArg, PortType t_portTypeArg);
+    PacketSniffer(IPCAPWrapper *pcapWrapperArg, const std::string &deviceArg, ThreadSafeQueue<PacketData> *queueArg, const std::unordered_map<ProtoType, bool> &protocolsArg, int numPacketsArg, int portArg, PortType t_portTypeArg);
 
     /**
      * @brief Destructor
@@ -72,6 +70,7 @@ class PacketSniffer {
     void startCapture();
 
   private:
+    IPCAPWrapper *pcapWrapper;
     pcap_t *handle;
     std::string device;
     ThreadSafeQueue<PacketData> *queue;
