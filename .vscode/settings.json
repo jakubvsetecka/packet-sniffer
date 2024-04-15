@@ -63,7 +63,13 @@
         "typeinfo": "cpp",
         "cstring": "cpp",
         "map": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "any": "cpp",
+        "chrono": "cpp",
+        "set": "cpp",
+        "optional": "cpp",
+        "iomanip": "cpp",
+        "variant": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
