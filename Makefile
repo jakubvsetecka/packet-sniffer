@@ -1,12 +1,14 @@
 CXX=g++
 CXXFLAGS=-Wall -std=c++20 -g -Wextra #-Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -fstack-protector-all -fsanitize=address -fsanitize=undefined
-INCLUDES=-I./src/header -I/usr/include/gtest/ -I/usr/include/gmock/
-LIBS=-lpcap -lgtest -lgtest_main -lgmock -lpthread
+INCLUDES= -I./src/headers -I./src/wrappers
+TEST_INCLUDES = -I./src/headers -I./src/wrappers -I/usr/include/gtest/ -I/usr/include/gmock/
+LIBS=-lpcap
+TEST_LIBS=$(LIBS) -lgtest -lgtest_main -lgmock -lpthread
 SRC=$(wildcard ./src/*.cpp)
 OBJ=$(SRC:.cpp=.o)
 DEPS=$(OBJ:.o=.d)  # Dependency files for header changes
 TARGET=ipk-sniffer
-TEST_SRC=$(wildcard ./src/*_test.cpp)
+TEST_SRC=$(wildcard ./tests/*.cpp) $(filter-out ./src/main.cpp, $(wildcard ./src/*.cpp))
 TEST_OBJ=$(TEST_SRC:.cpp=.o)
 TEST_TARGET=run_tests
 
@@ -24,7 +26,9 @@ $(TARGET): $(OBJ)
 test: $(TEST_TARGET)
 
 $(TEST_TARGET): $(TEST_OBJ)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(TEST_OBJ) $(LIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(TEST_INCLUDES) $(TEST_OBJ) $(TEST_LIBS) -o $@
+
+test-run: test
 	./$(TEST_TARGET)
 
 pack:
