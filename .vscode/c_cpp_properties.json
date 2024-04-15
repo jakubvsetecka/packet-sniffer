@@ -4,12 +4,13 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/src/header"
+                "${workspaceFolder}/src/header",
+                "/usr/include"
             ],
             "defines": [],
             "compilerPath": "/nix/store/p36fspjarx2fg3fnssbc3b602im9hld4-clang-wrapper-16.0.6/bin/clang",
             "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cppStandard": "c++20",
             "intelliSenseMode": "linux-clang-x64"
         }
     ],
