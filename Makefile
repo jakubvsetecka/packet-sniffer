@@ -10,6 +10,7 @@ DEPS=$(OBJ:.o=.d)  # Dependency files for header changes
 TARGET=ipk-sniffer
 TEST_SRC=$(wildcard ./tests/*.cpp) $(filter-out ./src/main.cpp, $(wildcard ./src/*.cpp))
 TEST_OBJ=$(TEST_SRC:.cpp=.o)
+TEST_DEPS=$(TEST_OBJ:.o=.d)
 TEST_TARGET=run_tests
 
 all: $(TARGET)
@@ -24,7 +25,7 @@ $(TARGET): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
 
 test: $(TEST_TARGET)
-
+-include $(TEST_DEPS)
 $(TEST_TARGET): $(TEST_OBJ)
 	$(CXX) $(CXXFLAGS) $(TEST_INCLUDES) $(TEST_OBJ) $(TEST_LIBS) -o $@
 
@@ -35,6 +36,6 @@ pack:
 	zip -r xvsete00.zip src/ Makefile README.md CHANGELOG.md
 
 clean:
-	rm -f $(OBJ) $(DEPS) $(TARGET) $(TEST_OBJ) $(TEST_TARGET) xvsete00.zip
+	rm -f $(OBJ) $(DEPS) $(TEST_DEPS) $(TARGET) $(TEST_TARGET) $(TEST_OBJ) $(TEST_TARGET) xvsete00.zip
 
 .PHONY: all test pack clean
