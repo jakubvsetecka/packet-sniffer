@@ -9,6 +9,8 @@
  */
 
 #include "ArgumentParser.h"
+#include "PacketData.h"
+#include "PacketHandler.h"
 #include "PacketSniffer.h"
 #include "RealIPCAPWrapper.h"
 #include "ThreadSafeQueue.h"
@@ -19,12 +21,21 @@ int main(int argc, char *argv[]) {
         ArgumentParser parser;
         parser.parse(argc, argv);
         parser.displayConfig();
-        ThreadSafeQueue<PacketSniffer::PacketData> queue;
+
+        ThreadSafeQueue<PacketData> queue;
+
+        PacketHandler handler(&queue);
+
         RealPCAPWrapper pcapWrapper;
+
         PacketSniffer sniffer(&pcapWrapper, "eth0", &queue, parser.getProtocols(), parser.getNumPackets(), parser.getPort(), parser.getPortType());
         sniffer.startCapture();
         std::cout << "Captured " << queue.size() << " packets" << std::endl;
+
+        handler.stop();
+
         queue.print();
+
         return 0;
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
