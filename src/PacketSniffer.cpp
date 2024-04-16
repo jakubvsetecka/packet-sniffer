@@ -41,6 +41,7 @@ PacketSniffer::PacketSniffer(IPCAPWrapper *pcapWrapperArg, const std::string &de
 }
 
 PacketSniffer::~PacketSniffer() {
+    // Close handle
     if (handle) {
         pcapWrapper->close(handle);
     }
@@ -96,12 +97,4 @@ void PacketSniffer::startCapture() {
 void PacketSniffer::packetHandlerStatic(u_char *userData, const struct pcap_pkthdr *header, const u_char *packet) {
     PacketSniffer *sniffer = reinterpret_cast<PacketSniffer *>(userData);
     sniffer->queue->push(PacketData(header, packet));
-}
-
-std::ostream &operator<<(std::ostream &os, const PacketSniffer::PacketData &pd) {
-    os << "Timestamp: " << pd.ts.tv_sec << "." << pd.ts.tv_usec
-       << ", Captured Length: " << pd.caplen
-       << ", Original Length: " << pd.len
-       << ", Data Size: " << pd.data.size() << " bytes";
-    return os;
 }
