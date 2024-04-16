@@ -24,7 +24,7 @@ using namespace testing;
 class PacketSnifferTest : public Test {
   protected:
     MockIPCAPWrapper *mockWrapper;
-    ThreadSafeQueue<PacketSniffer::PacketData> *packetQueue;
+    ThreadSafeQueue<PacketData> *packetQueue;
     std::unordered_map<ProtoType, bool> protocols;
     std::string device;
     PacketSnifferTestWrapper *sniffer;
@@ -37,7 +37,7 @@ class PacketSnifferTest : public Test {
      */
     void SetUp() override {
         mockWrapper = new MockIPCAPWrapper();
-        packetQueue = new ThreadSafeQueue<PacketSniffer::PacketData>();
+        packetQueue = new ThreadSafeQueue<PacketData>();
         protocols[ProtoType::TCP] = true;
         numPackets = 100;
         port = 8080;
@@ -126,4 +126,30 @@ TEST_F(PacketSnifferTest, StartCaptureProcess) {
     EXPECT_NO_THROW({
         sniffer->startCapture();
     });
+}
+
+/**
+ * @brief FillPacketQueue
+ *
+ * Test case for filling the packet queue
+ */
+TEST_F(PacketSnifferTest, FillPacketQueue) {
+    pcap_t *dummyHandle = reinterpret_cast<pcap_t *>(0x123456);
+    EXPECT_CALL(*mockWrapper, open_live(_, _, _, _, _))
+        .WillOnce(Return(dummyHandle)); // Ensure open_live succeeds for this test
+    EXPECT_CALL(*mockWrapper, loop(dummyHandle, numPackets, _, _))
+        .WillOnce(Invoke(sniffer, &PacketSnifferTestWrapper::packetHandlerStatic)); // Fill the packet queue
+    EXPECT_CALL(*mockWrapper, close(_))
+        .Times(1); // Ensure close is called once
+
+    sniffer = new PacketSnifferTestWrapper(mockWrapper, device, packetQueue, protocols, numPackets, port, portType);
+
+    // Expect the packet queue to be empty
+    ASSERT_EQ(packetQueue->size(), 0);
+
+    // Expect the packet queue to be filled
+    sniffer->startCapture();
+
+    // Expect the packet queue to be filled
+    ASSERT_EQ(packetQueue->size(), numPackets);
 }
