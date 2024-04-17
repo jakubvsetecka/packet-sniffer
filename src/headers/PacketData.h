@@ -42,6 +42,10 @@ class PacketData {
         return packet.data();
     }
 
+    const std::vector<u_char> &getPacket() const {
+        return packet;
+    }
+
     friend std::ostream &operator<<(std::ostream &os, const PacketData &pd);
 
   private:
