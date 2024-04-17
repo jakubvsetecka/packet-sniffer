@@ -10,41 +10,107 @@
 #include <chrono>  // For system_clock
 #include <ctime>   // For localtime, strftime
 #include <iomanip> // For setfill, setw
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
-void ParsingContext::print() const {
-    std::cout << "Protocol: " << toString(protocol) << std::endl;
+// Helper function to convert MAC or other byte arrays to readable format
+std::string ParsingContext::bytesToString(const std::vector<uint8_t> &bytes) const {
+    std::ostringstream stream;
+    for (size_t i = 0; i < bytes.size(); ++i) {
+        stream << std::hex << std::setfill('0') << std::setw(2) << static_cast<int>(bytes[i]);
+        if (i < bytes.size() - 1) stream << ":";
+    }
+    return stream.str();
+}
 
-    // Convert timestamp to readable format
+template <typename... Args>
+void ParsingContext::printField(const std::string &fieldName, Args... args) const {
+    const uint totalWidth = 78;
+    uint nameWidth = 18;
+    if (fieldName.size() > nameWidth) nameWidth = fieldName.size();
+    int valueWidth = totalWidth - nameWidth - 3;
+    std::cout << "| " << std::left << std::setw(nameWidth) << fieldName << "| ";
+    printValues(std::cout, valueWidth, args...);
+    std::cout << "|" << std::endl;
+}
+
+template <typename T, typename... Args>
+void ParsingContext::printValues(std::ostream &os, int valueWidth, T first, Args... args) const {
+    if constexpr (sizeof...(args) == 0) {                  // Last or only one element
+        os << std::left << std::setw(valueWidth) << first; // Print the last or only element with full width
+    } else {
+        os << first << " ";                   // Print current element and a space
+        printValues(os, valueWidth, args...); // Recursive call
+    }
+}
+
+void ParsingContext::printValues(std::ostream &os, int valueWidth) const {
+    os << std::setw(valueWidth) << " "; // Fill the rest of the space
+}
+
+void ParsingContext::printPacketData() const {
+    const int bytesPerLine = 16; // Standard number of bytes per line in packet data
+    std::ostringstream hexStream;
+    std::ostringstream asciiStream;
+
+    for (size_t i = 0; i < packet.size(); i += bytesPerLine) {
+        hexStream.str("");
+        asciiStream.str("");
+        hexStream << std::hex << "0x" << std::setw(4) << std::setfill('0') << i << " | ";
+
+        for (size_t j = i; j < i + bytesPerLine; ++j) {
+            if (j < packet.size()) {
+                unsigned char byte = packet[j];
+                hexStream << std::setw(2) << static_cast<int>(byte) << " ";
+                asciiStream << (byte >= 32 && byte <= 126 ? static_cast<char>(byte) : '.');
+            } else {
+                hexStream << "   ";
+            }
+
+            if (j == i + 7) { // Extra space in the middle for readability
+                hexStream << " ";
+            }
+        }
+
+        printField(hexStream.str(), asciiStream.str());
+    }
+}
+
+// Main print function that orchestrates the printing of all fields and packet data
+void ParsingContext::print() const {
+    const int totalWidth = 78; // Total width of the table used in all functions
+    std::cout << std::left;    // Set output alignment to left
+    std::cout << "+" << std::string(totalWidth - 59, '-') << "+" << std::string(totalWidth - 20, '-') << "+" << std::endl;
+
+    printField("Protocol", toString(protocol));
+    printField("Timestamp", formatTimestamp());
+    printField("MAC Source", macToString(sourceMAC));
+    printField("MAC Destination", macToString(destinationMAC));
+    printField("Length", std::to_string(length) + " bytes");
+    printField("IP Source", sourceIP.toString());
+    printField("IP Destination", destinationIP.toString());
+    printField("Port Source", std::to_string(sourcePort));
+    printField("Port Destination", std::to_string(destinationPort));
+
+    std::cout << "+" << std::string(8, '-') << "+" << std::string(10, '-') << "+" << std::string(39, '-') << "+" << std::string(totalWidth - 60, '-') << "+" << std::endl;
+
+    printPacketData(); // Print the packet data aligned with the above fields
+
+    std::cout << "+" << std::string(8, '-') << "+" << std::string(50, '-') << "+" << std::string(totalWidth - 60, '-') << "+" << std::endl;
+    std::cout << std::endl;
+}
+
+std::string ParsingContext::formatTimestamp() const {
     std::time_t rawtime = timeStamp.tv_sec;
     struct tm *dt;
-    char buffer[30]; // Buffer to hold the datetime string
+    char buffer[30];
     dt = localtime(&rawtime);
-    // Format datetime in ISO 8601 style
     strftime(buffer, sizeof(buffer), "%Y-%m-%dT%H:%M:%S", dt);
     long milliseconds = timeStamp.tv_usec / 1000; // Convert microseconds to milliseconds
-
-    std::cout << "Timestamp: " << buffer << "." << std::setfill('0') << std::setw(3) << milliseconds;
-    int timezoneOffset = dt->tm_gmtoff / 3600; // Local timezone offset
-    std::cout << (timezoneOffset >= 0 ? "+" : "") << timezoneOffset << ":00" << std::endl;
-
-    std::cout << "MAC Source: " << macToString(sourceMAC) << std::endl;
-    std::cout << "MAC Destination: " << macToString(destinationMAC) << std::endl;
-    std::cout << "Length: " << std::dec << length << " bytes" << std::endl; // Print length in decimal
-    std::cout << "IP Source: " << sourceIP.toString() << std::endl;
-    std::cout << "IP Destination: " << destinationIP.toString() << std::endl;
-    std::cout << "Port Source: " << std::dec << sourcePort << std::endl; // Print port in decimal
-    std::cout << "Port Destination: " << std::dec << destinationPort << std::endl;
-
-    std::cout << std::endl;
-    for (auto byte : packet) {
-        std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)byte << " "; // Ensure packet is printed in hex
-    }
-    std::cout << std::dec << std::endl; // Switch back to decimal output after hex
-
-    std::cout << std::endl;
-    std::cout << std::endl;
+    std::string tz = (dt->tm_gmtoff >= 0 ? "+" : "-") + std::to_string(abs(dt->tm_gmtoff / 3600)) + ":00";
+    return std::string(buffer) + "." + std::to_string(milliseconds) + tz;
 }
 
 void ParsingContext::setProtocol(ProtoType protocol) {
@@ -91,9 +157,8 @@ std::string ParsingContext::macToString(const uint8_t *mac) const {
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
     for (int i = 0; i < 6; ++i) {
-        ss << std::setw(2) << (unsigned int)mac[i];
-        if (i < 5)
-            ss << ":";
+        ss << std::setw(2) << static_cast<unsigned>(mac[i]);
+        if (i < 5) ss << ":";
     }
     return ss.str();
 }

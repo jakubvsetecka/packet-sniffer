@@ -45,6 +45,14 @@ class ParsingContext {
     std::vector<uint8_t> packet;
 
     std::string macToString(const uint8_t mac[6]) const;
+    void printPacketData() const;
+    std::string bytesToString(const std::vector<uint8_t> &bytes) const;
+    template <typename T, typename... Args>
+    void printValues(std::ostream &os, int valueWidth, T first, Args... args) const;
+    void printValues(std::ostream &os, int valueWidth) const;
+    template <typename... Args>
+    void printField(const std::string &fieldName, Args... args) const;
+    std::string formatTimestamp() const;
 };
 
 #endif // PARSING_CONTEXT_H
