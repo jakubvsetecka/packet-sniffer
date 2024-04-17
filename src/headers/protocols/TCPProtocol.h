@@ -13,9 +13,14 @@
 
 class TCPProtocol : public Protocol {
   public:
-    TCPProtocol();
-    ~TCPProtocol() override;
-    void process() override;
+    TCPProtocol(ParsingContext *context, std::vector<u_char> packet)
+        : Protocol(context, packet) {}
+    ~TCPProtocol() override = default;
+    void process() override{
+        // Implementation of the process method for IPv4
+        std::cout << "Processing TCP packet" << std::endl;
+        // Add actual processing logic here
+    }
 };
 
 #endif // TCP_PROTOCOL_H

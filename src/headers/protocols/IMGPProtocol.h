@@ -13,9 +13,14 @@
 
 class IMGPProtocol : public Protocol {
   public:
-    IMGPProtocol();
-    ~IMGPProtocol() override;
-    void process() override;
+    IMGPProtocol(ParsingContext *context, std::vector<u_char> packet)
+        : Protocol(context, packet) {}
+    ~IMGPProtocol() override = default;
+    void process() override{
+        // Implementation of the process method for IPv4
+        std::cout << "Processing IMGP packet" << std::endl;
+        // Add actual processing logic here
+    }
 };
 
 #endif // IMGP_PROTOCOL_H

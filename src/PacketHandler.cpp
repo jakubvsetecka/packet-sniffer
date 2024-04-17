@@ -12,10 +12,8 @@
 #include <iomanip>
 
 #include "IPv4Protocol.h"
-#include "protocols/IPv4Protocol.h"
 #include <arpa/inet.h>
 #include <cstring>
-#include <iomanip> // For std::setw and std::setfill
 #include <iostream>
 #include <netinet/if_ether.h>
 #include <vector>
@@ -47,7 +45,6 @@ void PacketHandler::stop() {
 }
 
 void PacketHandler::processPacket(const PacketData &packetData) {
-    ParsingContext context;
 
     if (packetData.getPacket().size() < sizeof(struct ether_header)) {
         std::cerr << "Packet too short to process" << std::endl;
@@ -57,6 +54,13 @@ void PacketHandler::processPacket(const PacketData &packetData) {
     // Properly accessing the packet data
     const struct ether_header *eth_header = reinterpret_cast<const struct ether_header *>(packetData.getData());
     u_int16_t type = ntohs(eth_header->ether_type); // Network to host short conversion
+
+    ParsingContext context;
+    context.setSourceMAC(eth_header->ether_shost);
+    context.setDestinationMAC(eth_header->ether_dhost);
+    context.setPacket(packetData.getPacket());
+    context.setLength(packetData.getLength());
+    context.setTimeStamp(packetData.getTimeStamp());
 
     auto protocol = ProtocolFactory::createProtocol(type, &context, packetData.getPacket());
     if (protocol != nullptr) {

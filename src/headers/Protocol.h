@@ -10,14 +10,15 @@
 #define PROTOCOL_H
 
 #include "PacketData.h"
+#include "ParsingContext.h"
 #include <netinet/if_ether.h>
 
 class Protocol {
   public:
     Protocol(ParsingContext *context, std::vector<u_char> packet)
         : context(context), packet(packet) {}
-    virtual ~Protocol();
-    virtual void process();
+    virtual ~Protocol() = default;
+    virtual void process() = 0;
 
   protected:
     ParsingContext *context;

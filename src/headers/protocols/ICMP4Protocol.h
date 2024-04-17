@@ -13,9 +13,14 @@
 
 class ICMP4Protocol : public Protocol {
   public:
-    ICMP4Protocol();
-    ~ICMP4Protocol() override;
-    void process() override;
+    ICMP4Protocol(ParsingContext *context, std::vector<u_char> packet)
+        : Protocol(context, packet) {}
+    ~ICMP4Protocol() override = default;
+    void process() override {
+        // Implementation of the process method for IPv4
+        std::cout << "Processing ICMPv4 packet" << std::endl;
+        // Add actual processing logic here
+    }
 };
 
 #endif // ICMP4_PROTOCOL_H

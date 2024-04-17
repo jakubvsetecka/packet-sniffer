@@ -13,9 +13,14 @@
 
 class MLDProtocol : public Protocol {
   public:
-    MLDProtocol();
-    ~MLDProtocol() override;
-    void process() override;
+    MLDProtocol(ParsingContext *context, std::vector<u_char> packet)
+        : Protocol(context, packet) {}
+    ~MLDProtocol() override = default;
+    void process() override {
+        // Implementation of the process method for IPv4
+        std::cout << "Processing MLD packet" << std::endl;
+        // Add actual processing logic here
+    }
 };
 
 #endif // MLD_PROTOCOL_H

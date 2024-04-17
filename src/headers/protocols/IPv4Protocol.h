@@ -13,8 +13,9 @@
 
 class IPv4Protocol : public Protocol {
   public:
-    IPv4Protocol();
-    ~IPv4Protocol() override;
+    IPv4Protocol(ParsingContext *context, std::vector<u_char> packet)
+        : Protocol(context, packet) {}
+    ~IPv4Protocol() override = default;
     void process() override;
 };
 

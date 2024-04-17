@@ -13,9 +13,14 @@
 
 class UDPProtocol : public Protocol {
   public:
-    UDPProtocol();
-    ~UDPProtocol() override;
-    void process() override;
+    UDPProtocol(ParsingContext *context, std::vector<u_char> packet)
+        : Protocol(context, packet) {}
+    ~UDPProtocol() override = default;
+    void process() override{
+        // Implementation of the process method for IPv4
+        std::cout << "Processing UDP packet" << std::endl;
+        // Add actual processing logic here
+    }
 };
 
 #endif // UDP_PROTOCOL_H

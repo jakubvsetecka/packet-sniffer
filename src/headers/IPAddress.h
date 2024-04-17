@@ -9,9 +9,11 @@
 #ifndef IPADRESS_H
 #define IPADRESS_H
 
+#include <arpa/inet.h> // For inet_ntop
 #include <cstdint>
 #include <cstring>
 #include <netinet/in.h>
+#include <string>
 #include <sys/time.h> // For struct timeval
 
 enum IPType {
@@ -24,6 +26,16 @@ union IPAddress {
     struct in6_addr ipv6; // IPv6 address (16 bytes)
 
     IPAddress() { memset(this, 0, sizeof(*this)); } // Constructor to zero-initialize the union
+
+    std::string toString() const {
+        char buffer[INET6_ADDRSTRLEN];
+        if (ipv4) {
+            inet_ntop(AF_INET, &ipv4, buffer, INET_ADDRSTRLEN);
+        } else {
+            inet_ntop(AF_INET6, &ipv6, buffer, INET6_ADDRSTRLEN);
+        }
+        return std::string(buffer);
+    }
 };
 
 #endif // IPADRESS_H

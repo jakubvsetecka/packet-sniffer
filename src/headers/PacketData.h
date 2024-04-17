@@ -23,7 +23,7 @@ class PacketData {
         : stop(true), packet(), header() {}
 
     // Standard constructor for normal packets
-    PacketData(const pcap_pkthdr *headerArg, const u_char *packetArg)
+    PacketData(const pcap_pkthdr *headerArg, const uint8_t *packetArg)
         : stop(false), packet(packetArg, packetArg + headerArg->caplen), header(*headerArg) {}
 
     size_t getLength() const {
@@ -38,18 +38,18 @@ class PacketData {
         return header.ts;
     }
 
-    const u_char *getData() const {
+    const uint8_t *getData() const {
         return packet.data();
     }
 
-    const std::vector<u_char> &getPacket() const {
+    const std::vector<uint8_t> &getPacket() const {
         return packet;
     }
 
     friend std::ostream &operator<<(std::ostream &os, const PacketData &pd);
 
   private:
-    std::vector<u_char> packet;
+    std::vector<uint8_t> packet;
     pcap_pkthdr header;
 };
 
