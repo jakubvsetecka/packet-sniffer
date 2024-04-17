@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-Wall -std=c++20 -g -Wextra #-Wshadow -Wnon-virtual-dtor -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -fstack-protector-all -fsanitize=address -fsanitize=undefined
-INCLUDES= -I./src/headers -I./src/wrappers
+INCLUDES= -I./src/headers -I./src/headers/protocols -I./src/wrappers
 TEST_INCLUDES = -I./src/headers -I./src/wrappers -I/usr/include/gtest/ -I/usr/include/gmock/
 LIBS=-lpcap
 TEST_LIBS=$(LIBS) -lgtest -lgtest_main -lgmock -lpthread
