@@ -58,7 +58,7 @@ void ParsingContext::printPacketData() const {
     for (size_t i = 0; i < packet.size(); i += bytesPerLine) {
         hexStream.str("");
         asciiStream.str("");
-        hexStream << std::hex << "0x" << std::setw(4) << std::setfill('0') << i << " | ";
+        hexStream << std::hex << "0x" << std::setw(4) << std::setfill('0') << i << ":| ";
 
         for (size_t j = i; j < i + bytesPerLine; ++j) {
             if (j < packet.size()) {
@@ -84,15 +84,29 @@ void ParsingContext::print() const {
     std::cout << std::left;    // Set output alignment to left
     std::cout << "+" << std::string(totalWidth - 59, '-') << "+" << std::string(totalWidth - 20, '-') << "+" << std::endl;
 
-    printField("Protocol", toString(protocol));
-    printField("Timestamp", formatTimestamp());
-    printField("MAC Source", macToString(sourceMAC));
-    printField("MAC Destination", macToString(destinationMAC));
-    printField("Length", std::to_string(length) + " bytes");
-    printField("IP Source", sourceIP.toString());
-    printField("IP Destination", destinationIP.toString());
-    printField("Port Source", std::to_string(sourcePort));
-    printField("Port Destination", std::to_string(destinationPort));
+    if (protoSet) {
+        printField("protocol: ", toString(protocol));
+    }
+    printField("timestamp:", formatTimestamp());
+    if (sourceMACSet) {
+        printField("source MAC: ", macToString(sourceMAC));
+    }
+    if (destinationMACSet) {
+        printField("dst MAC: ", macToString(destinationMAC));
+    }
+    printField("frame length: ", std::to_string(length) + " bytes");
+    if (sourceIPSet) {
+        printField("src IP: ", sourceIP.toString());
+    }
+    if (destinationIPSet) {
+        printField("dst IP: ", destinationIP.toString());
+    }
+    if (sourcePortSet) {
+        printField("src port: ", std::to_string(sourcePort));
+    }
+    if (destinationPortSet) {
+        printField("dst port: ", std::to_string(destinationPort));
+    }
 
     std::cout << "+" << std::string(8, '-') << "+" << std::string(10, '-') << "+" << std::string(39, '-') << "+" << std::string(totalWidth - 60, '-') << "+" << std::endl;
 
@@ -114,42 +128,52 @@ std::string ParsingContext::formatTimestamp() const {
 }
 
 void ParsingContext::setProtocol(ProtoType protocol) {
+    protoSet = true;
     this->protocol = protocol;
 }
 
 void ParsingContext::setSourceMAC(const uint8_t sourceMAC[6]) {
+    sourceMACSet = true;
     std::memcpy(this->sourceMAC, sourceMAC, 6);
 }
 
 void ParsingContext::setDestinationMAC(const uint8_t destinationMAC[6]) {
+    destinationMACSet = true;
     std::memcpy(this->destinationMAC, destinationMAC, 6);
 }
 
 void ParsingContext::setTimeStamp(timeval timeStamp) {
+    timeStampSet = true;
     this->timeStamp = timeStamp;
 }
 
 void ParsingContext::setLength(size_t length) {
+    lengthSet = true;
     this->length = length;
 }
 
 void ParsingContext::setSourceIP(IPAddress sourceIP) {
+    sourceIPSet = true;
     this->sourceIP = sourceIP;
 }
 
 void ParsingContext::setDestinationIP(IPAddress destinationIP) {
+    destinationIPSet = true;
     this->destinationIP = destinationIP;
 }
 
 void ParsingContext::setSourcePort(uint16_t sourcePort) {
+    sourcePortSet = true;
     this->sourcePort = sourcePort;
 }
 
 void ParsingContext::setDestinationPort(uint16_t destinationPort) {
+    destinationPortSet = true;
     this->destinationPort = destinationPort;
 }
 
 void ParsingContext::setPacket(std::vector<uint8_t> packet) {
+    packetSet = true;
     this->packet = packet;
 }
 

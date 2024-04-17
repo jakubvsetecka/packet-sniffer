@@ -44,6 +44,8 @@ class ParsingContext {
     uint16_t destinationPort;
     std::vector<uint8_t> packet;
 
+    bool protoSet, sourceMACSet, destinationMACSet, timeStampSet, lengthSet, sourceIPSet, destinationIPSet, sourcePortSet, destinationPortSet, packetSet = false;
+
     std::string macToString(const uint8_t mac[6]) const;
     void printPacketData() const;
     std::string bytesToString(const std::vector<uint8_t> &bytes) const;

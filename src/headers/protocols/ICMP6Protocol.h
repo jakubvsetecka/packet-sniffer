@@ -16,11 +16,7 @@ class ICMP6Protocol : public Protocol {
     ICMP6Protocol(ParsingContext *context, std::vector<u_char> packet)
         : Protocol(context, packet) {}
     ~ICMP6Protocol() override = default;
-    void process() override{
-        // Implementation of the process method for IPv4
-        std::cout << "Processing ICMPv6 packet" << std::endl;
-        // Add actual processing logic here
-    }
+    void process() override;
 };
 
 #endif // ICMP6_PROTOCOL_H

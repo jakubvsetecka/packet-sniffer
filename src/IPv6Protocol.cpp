@@ -1,17 +1,17 @@
 /**
- * @file IPv4Protocol.cpp
- * @brief IPv4 protocol
+ * @file IPv6Protocol.cpp
+ * @brief IPv6 protocol
  * @version 0.1
  * @date 17/04/2024
  * @author Jakub Všetečka
  */
 
-#include "IPv4Protocol.h"
+#include "IPv6Protocol.h"
 #include "ProtocolFactory.h"
 #include <iostream>
 #include <netinet/ip.h>
 
-void IPv4Protocol::process() {
+void IPv6Protocol::process() {
     if (packet.size() < sizeof(struct ip)) {
         std::cerr << "Packet too short to process" << std::endl;
         return;
@@ -20,10 +20,10 @@ void IPv4Protocol::process() {
     const struct ip *ip_header = reinterpret_cast<const struct ip *>(packet.data());
 
     IPAddress srcIP, destIP;
-    srcIP.ipv4 = ip_header->ip_src.s_addr; // Assuming network byte order is handled if needed
-    destIP.ipv4 = ip_header->ip_dst.s_addr;
+    srcIP.ipv6 = ip_header->ip_src.s_addr; // Assuming network byte order is handled if needed
+    destIP.ipv6 = ip_header->ip_dst.s_addr;
 
-    context->setProtocol(ProtoType::IPv4);
+    context->setProtocol(ProtoType::IPv6);
     context->setSourceIP(srcIP);
     context->setDestinationIP(destIP);
 
