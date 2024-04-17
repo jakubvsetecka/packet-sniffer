@@ -7,7 +7,8 @@
                 "${workspaceFolder}/src/header",
                 "/usr/include",
                 "${workspaceFolder}/src/headers",
-                "${workspaceFolder}/src/wrappers"
+                "${workspaceFolder}/src/wrappers",
+                "${workspaceFolder}/src/headers/protocols"
             ],
             "defines": [],
             "compilerPath": "/nix/store/p36fspjarx2fg3fnssbc3b602im9hld4-clang-wrapper-16.0.6/bin/clang",

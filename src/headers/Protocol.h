@@ -9,11 +9,19 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#include "PacketData.h"
+#include <netinet/if_ether.h>
+
 class Protocol {
   public:
-    Protocol();
+    Protocol(ParsingContext *context, std::vector<u_char> packet)
+        : context(context), packet(packet) {}
     virtual ~Protocol();
-    virtual void proccess();
+    virtual void process();
+
+  protected:
+    ParsingContext *context;
+    std::vector<u_char> packet;
 };
 
 #endif // PROTOCOL_H
