@@ -24,7 +24,10 @@ enum class ProtoType {
     ARP,
     NDP,
     IGMP,
-    MLD
+    MLD,
+    IPv4,
+    IPv6,
+    UNKNOWN
 };
 
 /**

@@ -26,6 +26,12 @@ std::string toString(ProtoType t) {
         return "IGMP";
     case ProtoType::MLD:
         return "MLD";
+    case ProtoType::IPv4:
+        return "IPv4";
+    case ProtoType::IPv6:
+        return "IPv6";
+    case ProtoType::UNKNOWN:
+        return "Unknown";
     default:
         return "Unknown";
     }
