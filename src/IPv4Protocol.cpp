@@ -1,3 +1,11 @@
+/**
+ * @file IPv4Protocol.cpp
+ * @brief IPv4 protocol
+ * @version 0.1
+ * @date 17/04/2024
+ * @author Jakub Všetečka
+ */
+
 #include "IPv4Protocol.h"
 #include "ProtocolFactory.h"
 #include <arpa/inet.h> // For ntohl
