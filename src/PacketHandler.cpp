@@ -46,7 +46,8 @@ void PacketHandler::stop() {
 
 void PacketHandler::processPacket(const PacketData &packetData) {
 
-    if (packetData.getPacket().size() < sizeof(struct ether_header)) {
+    const size_t ethernetHeaderSize = sizeof(struct ether_header);
+    if (packetData.getPacket().size() < ethernetHeaderSize) {
         std::cerr << "Packet too short to process" << std::endl;
         return; // Ensure the packet is large enough to contain an Ethernet header
     }
@@ -62,7 +63,10 @@ void PacketHandler::processPacket(const PacketData &packetData) {
     context.setLength(packetData.getLength());
     context.setTimeStamp(packetData.getTimeStamp());
 
-    auto protocol = ProtocolFactory::createProtocol(type, &context, packetData.getPacket());
+    // Create a new packet data buffer that excludes the Ethernet header
+    std::vector<uint8_t> packetWithoutEthernetHeader(packetData.getPacket().begin() + ethernetHeaderSize, packetData.getPacket().end());
+
+    auto protocol = ProtocolFactory::createProtocol(type, &context, packetWithoutEthernetHeader);
     if (protocol != nullptr) {
         protocol->process();
     }
