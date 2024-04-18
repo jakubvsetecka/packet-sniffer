@@ -16,11 +16,7 @@ class IPv6Protocol : public Protocol {
     IPv6Protocol(ParsingContext *context, std::vector<u_char> packet)
         : Protocol(context, packet) {}
     ~IPv6Protocol() override = default;
-    void process() override{
-        // Implementation of the process method for IPv4
-        std::cout << "Processing IPv6 packet" << std::endl;
-        // Add actual processing logic here
-    }
+    void process() override;
 };
 
 #endif // IPV6_PROTOCOL_H
