@@ -17,7 +17,8 @@
 
 class ParsingContext {
   public:
-    ParsingContext() = default;
+    ParsingContext()
+        : protoSet(false), sourceMACSet(false), destinationMACSet(false), timeStampSet(false), lengthSet(false), sourceIPSet(false), destinationIPSet(false), sourcePortSet(false), destinationPortSet(false), packetSet(false){};
     ~ParsingContext() = default;
     void print() const;
 
