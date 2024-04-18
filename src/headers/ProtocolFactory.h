@@ -44,7 +44,7 @@ class ProtocolFactory {
         if (it != registry.end()) {
             return it->second(context, packet); // Create a new instance using the registered factory method
         }
-        std::cerr << "No handler registered for type: 0x" << std::hex << type << std::endl;
+        // TODO maybe possible std::cerr << "No handler registered for type: 0x" << std::hex << type << std::endl;
         return nullptr;
     }
 };
