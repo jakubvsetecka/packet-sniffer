@@ -28,10 +28,13 @@ union IPAddress {
     IPAddress() { memset(this, 0, sizeof(*this)); } // Constructor to zero-initialize the union
 
     std::string toString() const {
-        char buffer[INET6_ADDRSTRLEN];
-        if (ipv4) {
-            inet_ntop(AF_INET, &ipv4, buffer, INET_ADDRSTRLEN);
-        } else {
+        char buffer[INET6_ADDRSTRLEN];       // Buffer to hold the IP address string
+        memset(buffer, 0, INET6_ADDRSTRLEN); // Initialize the buffer to zero
+
+        if (ipv4) {                                // Assuming ipv4 is non-zero for IPv4 addresses
+            uint32_t net_order_ipv4 = htonl(ipv4); // Convert to network byte order
+            inet_ntop(AF_INET, &net_order_ipv4, buffer, INET_ADDRSTRLEN);
+        } else { // For IPv6 addresses
             inet_ntop(AF_INET6, &ipv6, buffer, INET6_ADDRSTRLEN);
         }
         return std::string(buffer);
