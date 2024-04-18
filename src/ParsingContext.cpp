@@ -31,15 +31,15 @@ void ParsingContext::printField(const std::string &fieldName, Args... args) cons
     uint nameWidth = 18;
     if (fieldName.size() > nameWidth) nameWidth = fieldName.size();
     int valueWidth = totalWidth - nameWidth - 3;
-    std::cout << std::left << std::setw(nameWidth) << fieldName;
+    std::cout << std::left << fieldName;
     printValues(std::cout, valueWidth, args...);
     std::cout << std::endl;
 }
 
 template <typename T, typename... Args>
 void ParsingContext::printValues(std::ostream &os, int valueWidth, T first, Args... args) const {
-    if constexpr (sizeof...(args) == 0) {                  // Last or only one element
-        os << std::left << std::setw(valueWidth) << first; // Print the last or only element with full width
+    if constexpr (sizeof...(args) == 0) { // Last or only one element
+        os << std::left << first;         // Print the last or only element with full width
     } else {
         os << first << " ";                   // Print current element and a space
         printValues(os, valueWidth, args...); // Recursive call
@@ -86,7 +86,7 @@ void ParsingContext::print() const {
     }
     printField("timestamp:", formatTimestamp());
     if (sourceMACSet) {
-        printField("source MAC: ", macToString(sourceMAC));
+        printField("src MAC: ", macToString(sourceMAC));
     }
     if (destinationMACSet) {
         printField("dst MAC: ", macToString(destinationMAC));
