@@ -20,7 +20,7 @@ PacketSniffer::PacketSniffer(IPCAPWrapper *pcapWrapperArg, const std::string &de
     char errbuf[PCAP_ERRBUF_SIZE];
 
     // Open session
-    handle = pcapWrapper->open_live(device.c_str(), BUFSIZ, 1, 1000, errbuf);
+    handle = pcapWrapper->open_live(device.c_str(), 65535, 1, 1000, errbuf);
     if (handle == nullptr) {
         throw std::runtime_error("pcap_open_live failed: " + std::string(errbuf));
     }
@@ -86,7 +86,6 @@ std::string PacketSniffer::createFilter() {
     }
 
     std::string filterStr = filter.str();
-    std::cout << "Filter: " << filterStr << std::endl;
     return filterStr;
 }
 

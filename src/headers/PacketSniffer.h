@@ -9,12 +9,11 @@
 #ifndef PACKET_SNIFFER_H
 #define PACKET_SNIFFER_H
 
-#include "../wrappers/IPCAPWrapper.h"
 #include "IPCAPWrapper.h"
+#include "PacketData.h"
 #include "PortType.h"
 #include "ProtoType.h"
 #include "ThreadSafeQueue.h"
-#include "PacketData.h"
 #include <map>
 #include <string>
 #include <unordered_map>
@@ -25,8 +24,7 @@
  */
 class PacketSniffer {
     friend class PacketSnifferTest; // Grant the test class access to private members
-    public:
-
+  public:
     /**
      * @brief Constructor
      */
