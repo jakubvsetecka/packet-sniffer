@@ -31,9 +31,9 @@ void ParsingContext::printField(const std::string &fieldName, Args... args) cons
     uint nameWidth = 18;
     if (fieldName.size() > nameWidth) nameWidth = fieldName.size();
     int valueWidth = totalWidth - nameWidth - 3;
-    std::cout << "| " << std::left << std::setw(nameWidth) << fieldName << "| ";
+    std::cout << std::left << std::setw(nameWidth) << fieldName;
     printValues(std::cout, valueWidth, args...);
-    std::cout << "|" << std::endl;
+    std::cout << std::endl;
 }
 
 template <typename T, typename... Args>
@@ -58,7 +58,7 @@ void ParsingContext::printPacketData() const {
     for (size_t i = 0; i < packet.size(); i += bytesPerLine) {
         hexStream.str("");
         asciiStream.str("");
-        hexStream << std::hex << "0x" << std::setw(4) << std::setfill('0') << i << ":| ";
+        hexStream << std::hex << "0x" << std::setw(4) << std::setfill('0') << i << ": ";
 
         for (size_t j = i; j < i + bytesPerLine; ++j) {
             if (j < packet.size()) {
@@ -80,9 +80,6 @@ void ParsingContext::printPacketData() const {
 
 // Main print function that orchestrates the printing of all fields and packet data
 void ParsingContext::print() const {
-    const int totalWidth = 78; // Total width of the table used in all functions
-    std::cout << std::left;    // Set output alignment to left
-    std::cout << "+" << std::string(totalWidth - 59, '-') << "+" << std::string(totalWidth - 20, '-') << "+" << std::endl;
 
     if (protoSet) {
         printField("protocol: ", toString(protocol));
@@ -108,11 +105,11 @@ void ParsingContext::print() const {
         printField("dst port: ", std::to_string(destinationPort));
     }
 
-    std::cout << "+" << std::string(8, '-') << "+" << std::string(10, '-') << "+" << std::string(39, '-') << "+" << std::string(totalWidth - 60, '-') << "+" << std::endl;
+    std::cout << std::endl;
 
     printPacketData(); // Print the packet data aligned with the above fields
 
-    std::cout << "+" << std::string(8, '-') << "+" << std::string(50, '-') << "+" << std::string(totalWidth - 60, '-') << "+" << std::endl;
+    std::cout << std::endl;
     std::cout << std::endl;
 }
 
