@@ -57,9 +57,9 @@ class PacketSniffer {
         {ProtoType::ICMP4, "icmp"},
         {ProtoType::ICMP6, "icmp6"},
         {ProtoType::ARP, "arp"},
-        {ProtoType::NDP, "ndp"},
+        {ProtoType::NDP, "(icmp6 && (ip6[40] == 133 || ip6[40] == 134 || ip6[40] == 135 || ip6[40] == 136 || ip6[40] == 137))"},
         {ProtoType::IGMP, "igmp"},
-        {ProtoType::MLD, "mld"}};
+        {ProtoType::MLD, "(icmp6 && (ip6[40] == 130 || ip6[40] == 131 || ip6[40] == 132))"}};
 
     /**
      * @brief Create a filter

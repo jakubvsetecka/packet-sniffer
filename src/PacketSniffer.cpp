@@ -59,9 +59,7 @@ std::string PacketSniffer::createFilter() {
         filter << "src port " << port;
         break;
     case PortType::ANY:
-        if (port == -1) {
-            filter << "portrange 0-65535";
-        } else {
+        if (port != -1) {
             filter << "port " << port;
         }
         break;
@@ -72,8 +70,10 @@ std::string PacketSniffer::createFilter() {
     for (const auto &kv : protocols) {
         if (kv.second) { // Ensure the protocol is set to true
             if (first) {
-                filter << " and (";
-                first = false;
+                if (port != -1) {
+                    filter << " and (";
+                    first = false;
+                }
             } else {
                 filter << " or ";
             }
@@ -81,11 +81,12 @@ std::string PacketSniffer::createFilter() {
         }
     }
 
-    if (!first) { // This means the loop ran at least once and a protocol was added
+    if (!first && port != -1) { // This means the loop ran at least once and a protocol was added
         filter << ")";
     }
 
     std::string filterStr = filter.str();
+    // std::cout << "Filter: " << filterStr << std::endl;
     return filterStr;
 }
 
