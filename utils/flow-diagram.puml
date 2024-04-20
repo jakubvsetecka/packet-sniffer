@@ -1,0 +1,49 @@
+@startuml flow
+skinparam monochrome true
+
+start
+
+:Start Application;
+-> "Initialize ArgumentParser";
+note right: Parses command-line arguments\nto configure the sniffer
+
+:ArgumentParser.parse(argc, argv);
+-> "Create PacketSniffer Instance";
+note right: Setup with initial configurations\nlike device, filter, etc.
+
+:PacketSniffer.startCapture();
+note right: Begins packet capture on specified\nnetwork interface
+
+partition PacketCaptureLoop {
+    :Listen for Packets;
+    -> "Packet Received";
+    -> "Push Packet to ThreadSafeQueue";
+    note right: Captured packets are pushed\nto a thread-safe queue for processing
+    -> "Repeat until stopped";
+}
+
+-> "Initialize PacketHandler";
+note right: Handles packet processing from the queue
+
+:PacketHandler.run();
+note left: Starts the processing thread
+
+partition PacketProcessingLoop {
+    :Pop Packet from Queue;
+    -> "Determine Packet Type";
+    note right: Identify which protocol is used\nin the packet (e.g., TCP, UDP)
+    -> "Create Appropriate Protocol Handler";
+    note left: Utilizes ProtocolFactory to instantiate\nprotocol-specific handlers
+    :Protocol.process();
+    note left: Process the packet data\naccording to the protocol
+    -> "Repeat until queue is empty or stopped";
+}
+
+-> "Output Processed Data";
+note right: Could be logging, storing,\nor further processing
+-> "Clean up Resources";
+:End of Application;
+
+stop
+
+@enduml

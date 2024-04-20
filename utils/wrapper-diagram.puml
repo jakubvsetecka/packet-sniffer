@@ -1,0 +1,31 @@
+@startuml wrappers
+skinparam monochrome true
+
+interface IPCAPWrapper {
+    + {abstract} open_live(device : char*, snaplen : int, promisc : int, to_ms : int, errbuf : char*) : pcap_t*
+    + {abstract} compile(p : pcap_t*, fp : bpf_program*, str : char*, optimize : int, netmask : bpf_u_int32) : int
+    + {abstract} setfilter(p : pcap_t*, fp : bpf_program*) : int
+    + {abstract} loop(p : pcap_t*, cnt : int, callback : pcap_handler, user : u_char*) : int
+    + {abstract} close(p : pcap_t*) : void
+}
+
+class MockIPCAPWrapper {
+    + open_live(device : char*, snaplen : int, promisc : int, to_ms : int, errbuf : char*) : pcap_t*
+    + compile(p : pcap_t*, fp : bpf_program*, str : char*, optimize : int, netmask : bpf_u_int32) : int
+    + setfilter(p : pcap_t*, fp : bpf_program*) : int
+    + loop(p : pcap_t*, cnt : int, callback : pcap_handler, user : u_char*) : int
+    + close(p : pcap_t*) : void
+}
+
+class RealPCAPWrapper {
+    + open_live(device : char*, snaplen : int, promisc : int, to_ms : int, errbuf : char*) : pcap_t*
+    + compile(p : pcap_t*, fp : bpf_program*, str : char*, optimize : int, netmask : bpf_u_int32) : int
+    + setfilter(p : pcap_t*, fp : bpf_program*) : int
+    + loop(p : pcap_t*, cnt : int, callback : pcap_handler, user : u_char*) : int
+    + close(p : pcap_t*) : void
+}
+
+IPCAPWrapper <|-- MockIPCAPWrapper
+IPCAPWrapper <|-- RealPCAPWrapper
+
+@enduml

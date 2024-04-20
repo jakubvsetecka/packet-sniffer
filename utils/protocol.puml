@@ -1,0 +1,54 @@
+@startuml protocol
+
+abstract class Protocol {
+    # context : ParsingContext*
+    # packet : vector<u_char>
+    + process() : void
+}
+
+class ARPProtocol {
+}
+
+class ICMP4Protocol {
+}
+
+class ICMP6Protocol {
+}
+
+class IGMPProtocol {
+}
+
+class IMGPProtocol {
+}
+
+class IPv4Protocol {
+}
+
+class IPv6Protocol {
+}
+
+class MLDProtocol {
+}
+
+class NDPProtocol {
+}
+
+class TCPProtocol {
+}
+
+class UDPProtocol {
+}
+
+Protocol <|-- ARPProtocol
+Protocol <|-- ICMP4Protocol
+Protocol <|-- ICMP6Protocol
+Protocol <|-- IGMPProtocol
+Protocol <|-- IMGPProtocol
+Protocol <|-- IPv4Protocol
+Protocol <|-- IPv6Protocol
+Protocol <|-- MLDProtocol
+Protocol <|-- NDPProtocol
+Protocol <|-- TCPProtocol
+Protocol <|-- UDPProtocol
+
+@enduml

@@ -1,0 +1,116 @@
+@startuml class
+class ArgumentParser {
+    - interface : string
+    - port : int
+    - t_portType : PortType
+    - protocols : unordered_map<ProtoType, bool>
+    - numPackets : int
+    + usage() : void
+    + parse(argc : int, argv : char*[]) : void
+    + displayConfig() : void
+    + getInterface() : string
+    + getPort() : int
+    + getPortType() : PortType
+    + getProtocols() : unordered_map<ProtoType, bool>
+    + getNumPackets() : int
+    + validateArguments() : void
+    + areAllProtocolsDisabled() : bool
+    + listNetworkInterfaces() : void
+}
+
+class IPAddress {
+    - ipv4 : uint32_t
+    - ipv6 : in6_addr
+    + toString() : string
+}
+
+class PacketData {
+    - stop : bool
+    - packet : vector<uint8_t>
+    - header : pcap_pkthdr
+    + getLength() : size_t
+    + getCapturedLength() : size_t
+    + getTimeStamp() : timeval
+    + getData() : uint8_t*
+    + getPacket() : vector<uint8_t>&
+}
+
+class PacketHandler {
+    - queue : ThreadSafeQueue<PacketData>*
+    - worker : thread
+    + run() : void
+    + stop() : void
+    + processPacket(packet : PacketData) : void
+}
+
+class PacketSniffer {
+    - pcapWrapper : IPCAPWrapper*
+    - handle : pcap_t*
+    - device : string
+    - queue : ThreadSafeQueue<PacketData>*
+    - protocols : unordered_map<ProtoType, bool>
+    - numPackets : int
+    - port : int
+    - t_portType : PortType
+    - protoToFilter : map<ProtoType, string>
+    + startCapture() : void
+    + createFilter() : string
+    + packetHandlerStatic(userData : unsigned char*, pkthdr : pcap_pkthdr*, packet : unsigned char*) : void
+}
+
+class ParsingContext {
+    - protocol : ProtoType
+    - sourceMAC : uint8_t[6]
+    - destinationMAC : uint8_t[6]
+    - timeStamp : timeval
+    - length : size_t
+    - sourceIP : IPAddress
+    - destinationIP : IPAddress
+    - sourcePort : uint16_t
+    - destinationPort : uint16_t
+    - packet : vector<uint8_t>
+    + setProtocol(protocol : ProtoType) : void
+    + setSourceMAC(sourceMAC : uint8_t[6]) : void
+    + setDestinationMAC(destinationMAC : uint8_t[6]) : void
+    + setTimeStamp(timeStamp : timeval) : void
+    + setLength(length : size_t) : void
+    + setSourceIP(sourceIP : IPAddress) : void
+    + setDestinationIP(destinationIP : IPAddress) : void
+    + setSourcePort(sourcePort : uint16_t) : void
+    + setDestinationPort(destinationPort : uint16_t) : void
+    + setPacket(packet : vector<uint8_t>) : void
+    + print() : void
+}
+
+abstract class Protocol {
+    # context : ParsingContext*
+    # packet : vector<u_char>
+    + process() : void
+}
+
+class ProtocolFactory {
+    + createProtocol(type : uint16_t, context : ParsingContext*, packet : vector<u_char>) : shared_ptr<Protocol>
+}
+
+class ThreadSafeQueue<T> {
+    - queue : queue<T>
+    - mtx : mutex
+    - cond : condition_variable
+    + push(value : T) : void
+    + pop() : T
+    + try_pop(value : T&) : bool
+    + empty() : bool
+    + size() : size_t
+    + print() : void
+}
+
+PacketSniffer "1" --> "1" IPCAPWrapper : uses
+PacketSniffer "1" --> "1" ThreadSafeQueue : has
+PacketSniffer "1" --> "*" Protocol : uses
+PacketHandler "1" --> "1" ThreadSafeQueue : has
+PacketHandler "1" --> "1" PacketData : uses
+PacketHandler "1" --> "1" ParsingContext : uses
+Protocol "1" --> "1" ParsingContext : uses
+ParsingContext "1" --> "1" IPAddress : uses
+ProtocolFactory "1" --> "*" Protocol : creates
+@enduml
