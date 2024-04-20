@@ -11,6 +11,7 @@
 #include "PacketHandler.h"
 #include "PacketSniffer.h"
 #include "RealIPCAPWrapper.h"
+#include "SignalHandler.h"
 #include "ThreadSafeQueue.h"
 #include <iostream>
 
@@ -21,6 +22,9 @@ int main(int argc, char *argv[]) {
         if (parser.devices_listed) {
             return 0;
         }
+
+        SignalHandler signalHandler;
+        signalHandler.setSignalHandler();
 
         ThreadSafeQueue<PacketData> queue;
 
