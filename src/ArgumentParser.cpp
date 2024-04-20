@@ -128,8 +128,8 @@ void ArgumentParser::parse(int argc, char *argv[]) {
     validateArguments();
 }
 
-void ArgumentParser::validateArguments() const {
-    if (interface.empty() && port == 0 && areAllProtocolsDisabled() && numPackets == 1) {
+void ArgumentParser::validateArguments() {
+    if (interface.empty() && port == -1 && areAllProtocolsDisabled() && numPackets == 1) {
         listNetworkInterfaces();
     } else if (interface.empty()) {
         usage();
@@ -146,7 +146,7 @@ bool ArgumentParser::areAllProtocolsDisabled() const {
     return true;
 }
 
-void ArgumentParser::listNetworkInterfaces() const {
+void ArgumentParser::listNetworkInterfaces() {
     pcap_if_t *alldevs;
     pcap_if_t *device;
     char errbuf[PCAP_ERRBUF_SIZE];
@@ -158,13 +158,16 @@ void ArgumentParser::listNetworkInterfaces() const {
     }
 
     // Iterate over the list of devices and print them
-    std::cout << "Available Network Interfaces:" << std::endl;
+    std::cout << std::endl;
     for (device = alldevs; device != NULL; device = device->next) {
         std::cout << device->name;
         if (device->description)
             std::cout << " (" << device->description << ")";
         std::cout << std::endl;
     }
+    std::cout << std::endl;
+
+    devices_listed = true;
 
     // Free the device list
     pcap_freealldevs(alldevs);

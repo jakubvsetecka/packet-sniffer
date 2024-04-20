@@ -18,6 +18,9 @@ int main(int argc, char *argv[]) {
     try {
         ArgumentParser parser;
         parser.parse(argc, argv);
+        if (parser.devices_listed) {
+            return 0;
+        }
 
         ThreadSafeQueue<PacketData> queue;
 

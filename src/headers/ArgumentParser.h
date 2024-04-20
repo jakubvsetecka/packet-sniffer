@@ -20,6 +20,8 @@
  */
 class ArgumentParser {
   public:
+    bool devices_listed = false;
+
     ArgumentParser();
 
     /**
@@ -93,7 +95,7 @@ class ArgumentParser {
      *
      * @return void
      */
-    void validateArguments() const;
+    void validateArguments();
 
     /**
      * @brief Check if all protocols are disabled
@@ -107,7 +109,7 @@ class ArgumentParser {
      *
      * @return void
      */
-    void listNetworkInterfaces() const;
+    void listNetworkInterfaces();
 };
 
 #endif // ARGUMENT_PARSER_H
