@@ -83,7 +83,7 @@ Encapsulation is a process in the Data Link, Network, and Transport layers where
 - ARP/NDP (Data Link Layer): Address Resolution Protocol (ARP) and Neighbor Discovery Protocol (NDP) are used for mapping IP addresses to physical machine (MAC) addresses. ARP is used with IPv4 and NDP is part of the IPv6 specification.
 - IGMP/MLD (Network Layer): Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) are used to manage group membership for multicast traffic. IGMP is used with IPv4, while MLD is used with IPv6.
 - IPv4/IPv6 (Network Layer): Internet Protocol versions 4 and 6 are the primary protocols for routing traffic across the Internet.
--
+
 ### IP Extensions and Options
 IP headers can be extended with options to provide additional capabilities. Common options for IPv4 include security options (like the IPsec suite), record route (which stores the route of a packet), and timestamp options (which can be used for round-trip time measurements). IPv6 has a more streamlined approach with extension headers, which facilitate features like routing (alternate routing), fragmentation, and authentication.
 
