@@ -16,9 +16,7 @@ class MLDProtocol : public Protocol {
     MLDProtocol(ParsingContext *context, std::vector<u_char> packet)
         : Protocol(context, packet) {}
     ~MLDProtocol() override = default;
-    void process() override {
-        // Space for future implementation
-    }
+    void process() override;
 };
 
 #endif // MLD_PROTOCOL_H

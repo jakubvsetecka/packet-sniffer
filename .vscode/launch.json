@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/ipk-sniffer",
             "args": [
-                "-i", "eth0", "-n", "5"
+                "-i", "lo", "-n", "2", "--arp", "--ndp",
             ],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",

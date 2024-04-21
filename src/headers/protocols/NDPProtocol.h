@@ -16,9 +16,7 @@ class NDPProtocol : public Protocol {
     NDPProtocol(ParsingContext *context, std::vector<u_char> packet)
         : Protocol(context, packet) {}
     ~NDPProtocol() override = default;
-    void process() override{
-        // Space for future implementation
-    }
+    void process() override;
 };
 
 #endif // NDP_PROTOCOL_H
