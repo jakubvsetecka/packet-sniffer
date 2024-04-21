@@ -10,9 +10,9 @@
 #define PACKET_HANDLER_H
 
 #include "PacketData.h"
+#include "ParsingContext.h"
 #include "ProtocolFactory.h"
 #include "ThreadSafeQueue.h"
-#include "ParsingContext.h"
 
 /**
  * @brief Packet handler

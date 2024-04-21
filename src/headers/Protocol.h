@@ -9,7 +9,6 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
-#include "PacketData.h"
 #include "ParsingContext.h"
 #include <netinet/if_ether.h>
 
