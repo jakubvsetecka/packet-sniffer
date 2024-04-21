@@ -1,29 +1,4 @@
 @startuml class
-class ArgumentParser {
-    - interface : string
-    - port : int
-    - t_portType : PortType
-    - protocols : unordered_map<ProtoType, bool>
-    - numPackets : int
-    + usage() : void
-    + parse(argc : int, argv : char*[]) : void
-    + displayConfig() : void
-    + getInterface() : string
-    + getPort() : int
-    + getPortType() : PortType
-    + getProtocols() : unordered_map<ProtoType, bool>
-    + getNumPackets() : int
-    + validateArguments() : void
-    + areAllProtocolsDisabled() : bool
-    + listNetworkInterfaces() : void
-}
-
-class IPAddress {
-    - ipv4 : uint32_t
-    - ipv6 : in6_addr
-    + toString() : string
-}
-
 class PacketData {
     - stop : bool
     - packet : vector<uint8_t>
@@ -104,13 +79,21 @@ class ThreadSafeQueue<T> {
     + print() : void
 }
 
+interface IPCAPWrapper {
+    + {abstract} open_live(device : char*, snaplen : int, promisc : int, to_ms : int, errbuf : char*) : pcap_t*
+    + {abstract} compile(p : pcap_t*, fp : bpf_program*, str : char*, optimize : int, netmask : bpf_u_int32) : int
+    + {abstract} setfilter(p : pcap_t*, fp : bpf_program*) : int
+    + {abstract} loop(p : pcap_t*, cnt : int, callback : pcap_handler, user : u_char*) : int
+    + {abstract} close(p : pcap_t*) : void
+}
+
 PacketSniffer "1" --> "1" IPCAPWrapper : uses
 PacketSniffer "1" --> "1" ThreadSafeQueue : has
 PacketSniffer "1" --> "*" Protocol : uses
 PacketHandler "1" --> "1" ThreadSafeQueue : has
-PacketHandler "1" --> "1" PacketData : uses
+PacketHandler "1" --> "*" PacketData : uses
+PacketSniffer "1" --> "*" PacketData : uses
 PacketHandler "1" --> "1" ParsingContext : uses
 Protocol "1" --> "1" ParsingContext : uses
-ParsingContext "1" --> "1" IPAddress : uses
 ProtocolFactory "1" --> "*" Protocol : creates
 @enduml

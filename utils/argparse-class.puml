@@ -1,0 +1,22 @@
+@startuml argparse
+
+class ArgumentParser {
+    - interface : string
+    - port : int
+    - t_portType : PortType
+    - protocols : unordered_map<ProtoType, bool>
+    - numPackets : int
+    + usage() : void
+    + parse(argc : int, argv : char*[]) : void
+    + displayConfig() : void
+    + getInterface() : string
+    + getPort() : int
+    + getPortType() : PortType
+    + getProtocols() : unordered_map<ProtoType, bool>
+    + getNumPackets() : int
+    + validateArguments() : void
+    + areAllProtocolsDisabled() : bool
+    + listNetworkInterfaces() : void
+}
+
+@enduml
