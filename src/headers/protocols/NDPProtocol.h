@@ -17,9 +17,7 @@ class NDPProtocol : public Protocol {
         : Protocol(context, packet) {}
     ~NDPProtocol() override = default;
     void process() override{
-        // Implementation of the process method for IPv4
-        std::cout << "Processing NDP packet" << std::endl;
-        // Add actual processing logic here
+        // Space for future implementation
     }
 };
 
