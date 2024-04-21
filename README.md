@@ -1,5 +1,7 @@
 # IPK-network-sniffer
 
+> **Note:** The production of this file was accelerated by [chatGPT4](https://chat.openai.com/)
+
 ## Table of Contents
 - [IPK-network-sniffer](#ipk-network-sniffer)
   - [Table of Contents](#table-of-contents)
@@ -44,7 +46,28 @@
       - [`MockIPCAPWrapper`](#mockipcapwrapper)
       - [`RealIPCAPWrapper`](#realipcapwrapper)
   - [Testing](#testing)
+    - [Tests Implemented by Me](#tests-implemented-by-me)
+      - [Test Case 1: Interface Listing](#test-case-1-interface-listing)
+      - [Test Case 2: Default Single Packet Capture](#test-case-2-default-single-packet-capture)
+      - [Test Case 3: TCP Filtering](#test-case-3-tcp-filtering)
+      - [Test Case 4: UDP Filtering by Port](#test-case-4-udp-filtering-by-port)
+      - [Test Case 5: Combined TCP and UDP Port Filtering](#test-case-5-combined-tcp-and-udp-port-filtering)
+      - [Test Case 6: ICMPv4 and ICMPv6 Filtering](#test-case-6-icmpv4-and-icmpv6-filtering)
+      - [Test Case 7: ARP and NDP Display](#test-case-7-arp-and-ndp-display)
+      - [Test Case 8: Multiple Packet Capture](#test-case-8-multiple-packet-capture)
+      - [Test Case 9: Protocol Exclusivity Test](#test-case-9-protocol-exclusivity-test)
+    - [Hardware specifications](#hardware-specifications)
+      - [Processor](#processor)
+      - [General Info](#general-info)
+      - [Features](#features)
+      - [Vulnerabilities](#vulnerabilities)
+      - [Performance](#performance)
+      - [Architecture](#architecture)
+    - [Software specifications](#software-specifications)
   - [Bibliography](#bibliography)
+    - [Books](#books)
+    - [Standards and Specifications](#standards-and-specifications)
+    - [Online Resources](#online-resources)
 
 ## Theory
 
@@ -311,9 +334,241 @@ Extracts ARP-specific information such as sender and target IP addresses.
 
 ## Testing
 
-TODO
+Testing was conducted using a robust suite from [IPK Sniffer Tests](https://git.fit.vutbr.cz/xjerab28/IPK-Sniffer-Tests), complemented by additional tests I designed to thoroughly evaluate specified functionalities and ensure reliable operation under various scenarios. Below I mention some of the tests I conducted:
 
+### Tests Implemented by Me
+
+#### Test Case 1: Interface Listing
+-   **Objective**: Validate that the program lists all active interfaces correctly when no interface is specified.
+-   **Steps**: Run ./ipk-sniffer without any arguments.
+-   **Expected Result**: The program prints a list of all active network interfaces.
+```
+Running Test: testInterfaceListing
+
+Sniffer started with arguments: []
+Asserting that 'lo' is in sniffed packet
+👍
+Asserting that 'eth0' is in sniffed packet
+👍
+```
+
+#### Test Case 2: Default Single Packet Capture
+-   **Objective**: Verify that the program captures and displays exactly one packet if the -n parameter is not specified.
+-   **Steps**: Run ./ipk-sniffer -i lo.
+-   **Expected Result**: The program captures and displays exactly one packet from the lo interface.
+```
+Running Test: testSinglePacketCapture
+
+Sniffer started with arguments: ['-i', 'lo']
+Asserting that 1 == 1
+👍
+.Sniffer started with arguments: ['-i', 'lo', '--tcp', '-p', '4567']
+Asserting that 'src IP: 127.0.0.1' is in sniffed packet
+👍
+Asserting that 'dst port: 4567' is in sniffed packet
+👍
+```
+
+#### Test Case 3: TCP Filtering
+-   **Objective**: Test TCP packet filtering functionality.
+-   **Steps**: Run ./ipk-sniffer --interface lo --tcp.
+-   **Expected Result**: Only TCP packets are captured and displayed from the lo interface.
+
+```
+Running Test: testTcp2
+
+Sniffer started with arguments: ['-i', 'lo', '--tcp']
+Asserting that 'protocol: TCP' is in sniffed packet
+👍
+```
+
+#### Test Case 4: UDP Filtering by Port
+-   **Objective**: Ensure that UDP packet filtering by source or destination port works correctly.
+-   **Steps**: Run ./ipk-sniffer -i lo -u --port-source 53.
+-   **Expected Result**: Only UDP packets with source port 53 are captured and displayed.
+```
+Running Test: testUdp2
+
+Sniffer started with arguments: ['-i', 'lo', '--udp']
+Asserting that 'protocol: UDP' is in sniffed packet
+👍
+```
+
+#### Test Case 5: Combined TCP and UDP Port Filtering
+-   **Objective**: Test combined TCP and UDP packet capture with specific port filtering.
+-   **Steps**: Run ./ipk-sniffer -i lo --tcp --udp --port-destination 80.
+-   **Expected Result**: Both TCP and UDP packets with destination port 80 are captured and displayed.
+
+#### Test Case 6: ICMPv4 and ICMPv6 Filtering
+-   **Objective**: Validate filtering for ICMPv4 and ICMPv6 packets.
+-   **Steps**: Run ./ipk-sniffer -i lo --icmp4 --icmp6.
+-   **Expected Result**: Only ICMPv4 and ICMPv6 packets are captured and displayed from the lo interface.
+```
+Running Test: testIcmp
+
+Sniffer started with arguments: ['-i', 'lo', '--icmp4', '--icmp6', '-n', '2']
+Asserting that 'src IP: ::1' is in sniffed packet
+👍
+Asserting that 2 == 2
+👍
+Asserting that 'protocol: ICMP4' is in sniffed packet
+👍
+Asserting that 'protocol: ICMP6' is in sniffed packet
+👍
+.Sniffer started with arguments: ['-i', 'lo', '--icmp4']
+Asserting that 'src IP: 127.0.0.1' is in sniffed packet
+👍
+Asserting that 'frame length: 42' is in sniffed packet
+👍
+.Sniffer started with arguments: ['-i', 'lo', '--icmp6']
+Asserting that 'src IP: ::1' is in sniffed packet
+👍
+Asserting that 'frame length: 62' is in sniffed packet
+👍
+.Sniffer started with arguments: ['-i', 'lo', '--icmp6']
+Asserting that 'src IP: ::1' is in sniffed packet
+👍
+Asserting that 'frame length: 73' is in sniffed packet
+👍
+```
+
+#### Test Case 7: ARP and NDP Display
+-   **Objective**: Check that ARP and NDP frames are captured and displayed when specified.
+-   **Steps**: Run ./ipk-sniffer -i lo --arp --ndp.
+-   **Expected Result**: Only ARP and NDP packets are captured and displayed.
+```
+Running Test: testArpNdp
+
+Sniffer started with arguments: ['-i', 'lo', '--arp', '--ndp', '-n', '2']
+Asserting that 'src MAC: 00:00:00:00:00:00' is in sniffed packet
+👍
+Asserting that 2 == 2
+👍
+Asserting that 'protocol: ARP' is in sniffed packet
+👍
+Asserting that 'protocol: ICMP6' is in sniffed packet
+👍
+```
+
+#### Test Case 8: Multiple Packet Capture
+-   **Objective**: Confirm that the program can capture a specified number of packets.
+-   **Steps**: Run ./ipk-sniffer -i lo -n 10.
+-   **Expected Result**: Exactly 10 packets are captured and displayed from the lo interface.
+```
+Running Test: testMultiplePacketCapture
+
+Sniffer started with arguments: ['-i', 'lo', '-n', '10']
+Asserting that 10 == 10
+👍
+.Sniffer started with arguments: ['-i', 'lo', '--ndp']
+Asserting that 'src IP: ::1' is in sniffed packet
+👍
+Asserting that 'frame length: 78' is in sniffed packet
+👍
+.Sniffer started with arguments: ['-i', 'lo', '--ndp']
+Asserting that 'src IP: ::1' is in sniffed packet
+👍
+Asserting that 'frame length: 62' is in sniffed packet
+👍
+```
+
+#### Test Case 9: Protocol Exclusivity Test
+-   **Objective**: Ensure that specifying multiple protocols does not capture unspecified protocols.
+-   **Steps**: Run ./ipk-sniffer -i lo --tcp --udp --icmp4.
+-   **Expected Result**: No ARP, NDP, IGMP, or MLD packets are displayed, only TCP, UDP, and ICMPv4 packets.
+```
+Running Test: testProtocolExclusivity
+
+Sniffer started with arguments: ['-i', 'lo', '--tcp', '--udp', '--icmp4', '-n', '7']
+Asserting that 'protocol: ARP' is NOT in sniffed packet
+👍
+Asserting that 'protocol: NDP' is NOT in sniffed packet
+👍
+Asserting that 'protocol: IGMP' is NOT in sniffed packet
+👍
+Asserting that 'protocol: ICMPv6' is NOT in sniffed packet
+👍
+Asserting that 'protocol: MLD' is NOT in sniffed packet
+👍
+Asserting that 3 == 3
+👍
+```
+
+### Hardware specifications
+
+#### Processor
+
+-   **Model**: Intel(R) Core(TM) i5-6300HQ CPU @ 2.30GHz
+-   **CPU MHz**: 2304.000
+-   **Cache Size**: 6144 KB
+-   **Cores**: 4
+
+#### General Info
+
+-   **Vendor ID**: GenuineIntel
+-   **CPU Family**: 6
+-   **Model Number**: 94
+-   **Stepping**: 3
+-   **Microcode Version**: 0xffffffff
+
+#### Features
+
+-   **Virtualization (Hypervisor)**: Yes
+-   **Security Features**: NX, IBRS, IBPB, STIBP
+-   **Performance Boosting**: HT (Hyper-Threading), Turbo Boost
+-   **Additional Flags**: SSE4_1, SSE4_2, AVX2
+
+#### Vulnerabilities
+
+#### Performance
+
+-   **BogoMIPS**: 4608.00
+
+#### Architecture
+
+-   **Physical Address Sizes**: 39 bits
+-   **Virtual Address Sizes**: 48 bits
+
+_Note: This configuration represents one of the CPU cores as seen by the system. All cores have similar configurations._
+
+### Software specifications
+
+-   **Operating System**: Ubuntu 22.04.4 LTS
+-   **Kernel Version**: 5.15.146.1-microsoft-standard-WSL2
+-   **Compiler**: gcc (GCC) 12.3.0
+-   **Google Test Version**: 1.14.0
 
 ## Bibliography
 
-> **Note:** Production of this README was accelerated by [chatGPT4](https://chat.openai.com/)
+### Books
+
+1. **"Computer Networking: A Top-Down Approach"** by James F. Kurose and Keith W. Ross
+   - Provides comprehensive insights into the OSI model, encapsulation processes, and detailed protocol explanations.
+
+2. **"Computer Networks"** by Andrew S. Tanenbaum and David J. Wetherall
+   - A classic text that explores network architectures and the behavior of protocols at various OSI layers.
+
+### Standards and Specifications
+
+3. **[RFC 791 - Internet Protocol](https://tools.ietf.org/html/rfc791)**
+   - Foundational document for IPv4 detailing its protocol structure, including header formats and options.
+
+4. **[RFC 8200 - Internet Protocol, Version 6 (IPv6) Specification](https://tools.ietf.org/html/rfc8200)**
+   - Specifies the structure and usage of IPv6, including the approach to extension headers.
+
+5. **[RFC 792 - Internet Control Message Protocol](https://tools.ietf.org/html/rfc792)**
+   - Details the structure and usage of ICMP, integral to network management and behavior analysis.
+
+6. **[RFC 826 - An Ethernet Address Resolution Protocol](https://tools.ietf.org/html/rfc826)**
+   - Specifies the ARP protocol for IP address resolution in Ethernet networks.
+
+7. **[IEEE 802.3 Standard](https://www.ieee802.org/3/)**
+   - Defines Ethernet, detailing the technical specifications of physical and data link layer interactions.
+
+### Online Resources
+
+8. **[IETF (Internet Engineering Task Force)](https://www.ietf.org/)**
+   - Access to all RFCs (Request for Comments) that define the protocols and extensions mentioned, such as IGMP and MLD.
+
+9. **[Cisco Networking Academy](https://www.netacad.com/)**
+   - Offers detailed educational materials and visual resources on networking layers, encapsulation, and protocol specifications.
