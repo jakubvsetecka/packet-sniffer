@@ -72,8 +72,8 @@ std::string PacketSniffer::createFilter() {
             if (first) {
                 if (port != -1) {
                     filter << " and (";
-                    first = false;
                 }
+                first = false;
             } else {
                 filter << " or ";
             }
