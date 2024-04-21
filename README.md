@@ -125,6 +125,7 @@ The diagram in Figure 3 provides a complete overview of the system's architectur
 The flow diagram in Figure 4 illustrates the process flow from the start of the application to the processing of packets. It highlights the dynamic interactions between components such as the `ArgumentParser`, `PacketSniffer`, `ThreadSafeQueue`, and `PacketHandler`.
 
 ![Flow Diagram](imgs/flow.png)
+
 *Figure 4: Flow Diagram depicting the operational flow from packet capture to packet processing.*
 
 ### Use of Threading
