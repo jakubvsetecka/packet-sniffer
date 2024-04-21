@@ -86,7 +86,6 @@ std::string PacketSniffer::createFilter() {
     }
 
     std::string filterStr = filter.str();
-    // std::cout << "Filter: " << filterStr << std::endl;
     return filterStr;
 }
 
