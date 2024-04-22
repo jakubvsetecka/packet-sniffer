@@ -33,7 +33,7 @@ test-run: test
 	./$(TEST_TARGET)
 
 pack:
-	zip -r xvsete00.zip src/ Makefile README.md CHANGELOG.md
+	find src/ -name "*.cpp" -o -name "*.h" | zip xvsete00.zip -@ Makefile README.md CHANGELOG.md
 
 clean:
 	rm -f $(OBJ) $(DEPS) $(TEST_DEPS) $(TARGET) $(TEST_TARGET) $(TEST_OBJ) $(TEST_TARGET) xvsete00.zip

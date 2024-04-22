@@ -2,6 +2,9 @@
 # Prerequisites
 *.d
 
+# Zip
+*.zip
+
 # Binary
 ipk-sniffer
 run_tests
