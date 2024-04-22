@@ -16,9 +16,7 @@ class IGMPProtocol : public Protocol {
     IGMPProtocol(ParsingContext *context, std::vector<u_char> packet)
         : Protocol(context, packet) {}
     ~IGMPProtocol() override = default;
-    void process() override {
-        // Space for future implementation
-    }
+    void process() override;
 };
 
 #endif // IGMP_PROTOCOL_H
