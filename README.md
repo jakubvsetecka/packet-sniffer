@@ -71,6 +71,8 @@
 
 ## Theory
 
+The following section draws on concepts described in "Computer Networking: A Top-Down Approach" by James F. Kurose and Keith W. Ross[[1]](#1),  "Computer Networks" by Andrew S. Tanenbaum and David J. Wetherall[[2]](#2) and Cisco Networking Academy[[9]](#9). These texts provide in-depth theoretical underpinnings that help explain the layered architecture of network systems, specifically the OSI model, and the behavior of various network protocols at each layer.
+
 ### OSI Model
 The Open Systems Interconnection (OSI) model is a conceptual framework used to understand network interactions in seven layers. Each layer serves a specific function and communicates with the layers directly above and below it:
 
@@ -102,10 +104,10 @@ Encapsulation is a process in the Data Link, Network, and Transport layers where
 +-----------------+---------------------------------------------------+
 ```
 - TCP/UDP (Transport Layer): These protocols are responsible for end-to-end communication. TCP provides reliable transmission with flow control and error handling, while UDP offers a connectionless service for applications that require speed over reliability.
-- ICMP4/ICMP6 (Network Layer): Internet Control Message Protocol is used for sending error messages and operational information indicating, for example, that a requested service is not available or that a host or router could not be reached.
-- ARP/NDP (Data Link Layer): Address Resolution Protocol (ARP) and Neighbor Discovery Protocol (NDP) are used for mapping IP addresses to physical machine (MAC) addresses. ARP is used with IPv4 and NDP is part of the IPv6 specification.
-- IGMP/MLD (Network Layer): Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) are used to manage group membership for multicast traffic. IGMP is used with IPv4, while MLD is used with IPv6.
-- IPv4/IPv6 (Network Layer): Internet Protocol versions 4 and 6 are the primary protocols for routing traffic across the Internet.
+- ICMP4/ICMP6 (Network Layer): Internet Control Message Protocol is used for sending error messages and operational information indicating, for example, that a requested service is not available or that a host or router could not be reached.[[5]](#5)
+- ARP/NDP (Data Link Layer): Address Resolution Protocol (ARP) and Neighbor Discovery Protocol (NDP) are used for mapping IP addresses to physical machine (MAC) addresses. ARP is used with IPv4 and NDP is part of the IPv6 specification.[[6]](#6)
+- IGMP/MLD (Network Layer): Internet Group Management Protocol (IGMP) and Multicast Listener Discovery (MLD) are used to manage group membership for multicast traffic. IGMP is used with IPv4, while MLD is used with IPv6.[[8]](#8)
+- IPv4/IPv6 (Network Layer): Internet Protocol versions 4 and 6 are the primary protocols for routing traffic across the Internet.[[3]](#3)[[4]](#4)
 
 ### IP Extensions and Options
 IP headers can be extended with options to provide additional capabilities. Common options for IPv4 include security options (like the IPsec suite), record route (which stores the route of a packet), and timestamp options (which can be used for round-trip time measurements). IPv6 has a more streamlined approach with extension headers, which facilitate features like routing (alternate routing), fragmentation, and authentication.
@@ -113,7 +115,7 @@ IP headers can be extended with options to provide additional capabilities. Comm
 ### Link Types
 In network packet capturing, the link type specifies the link protocol's type. Since this project uses only LINKTYPE_ETHERNET, the following applies:
 
-- Ethernet: The most common link type for local area networks (LANs). Ethernet frames encapsulate various network layer protocols such as IP packets and have a well-defined format including source and destination MAC addresses, a type field (to indicate the network layer protocol), and a frame check sequence for error detection.
+- Ethernet: The most common link type for local area networks (LANs). Ethernet frames encapsulate various network layer protocols such as IP packets and have a well-defined format including source and destination MAC addresses, a type field (to indicate the network layer protocol), and a frame check sequence for error detection.[[7]](#7)
 
 ## Design Overview
 
@@ -542,33 +544,18 @@ _Note: This configuration represents one of the CPU cores as seen by the system.
 
 ### Books
 
-1. **"Computer Networking: A Top-Down Approach"** by James F. Kurose and Keith W. Ross
-   - Provides comprehensive insights into the OSI model, encapsulation processes, and detailed protocol explanations.
-
-2. **"Computer Networks"** by Andrew S. Tanenbaum and David J. Wetherall
-   - A classic text that explores network architectures and the behavior of protocols at various OSI layers.
+1. <a id="1"></a>**"Computer Networking: A Top-Down Approach"** by James F. Kurose and Keith W. Ross
+2. <a id="2"></a>**"Computer Networks"** by Andrew S. Tanenbaum and David J. Wetherall
 
 ### Standards and Specifications
 
-3. **[RFC 791 - Internet Protocol](https://tools.ietf.org/html/rfc791)**
-   - Foundational document for IPv4 detailing its protocol structure, including header formats and options.
-
-4. **[RFC 8200 - Internet Protocol, Version 6 (IPv6) Specification](https://tools.ietf.org/html/rfc8200)**
-   - Specifies the structure and usage of IPv6, including the approach to extension headers.
-
-5. **[RFC 792 - Internet Control Message Protocol](https://tools.ietf.org/html/rfc792)**
-   - Details the structure and usage of ICMP, integral to network management and behavior analysis.
-
-6. **[RFC 826 - An Ethernet Address Resolution Protocol](https://tools.ietf.org/html/rfc826)**
-   - Specifies the ARP protocol for IP address resolution in Ethernet networks.
-
-7. **[IEEE 802.3 Standard](https://www.ieee802.org/3/)**
-   - Defines Ethernet, detailing the technical specifications of physical and data link layer interactions.
+3. <a id="3"></a>**[RFC 791 - Internet Protocol](https://tools.ietf.org/html/rfc791)**
+4. <a id="4"></a>**[RFC 8200 - Internet Protocol, Version 6 (IPv6) Specification](https://tools.ietf.org/html/rfc8200)**
+5. <a id="5"></a>**[RFC 792 - Internet Control Message Protocol](https://tools.ietf.org/html/rfc792)**
+6. <a id="6"></a>**[RFC 826 - An Ethernet Address Resolution Protocol](https://tools.ietf.org/html/rfc826)**
+7. <a id="7"></a>**[IEEE 802.3 Standard](https://www.ieee802.org/3/)**
 
 ### Online Resources
 
-8. **[IETF (Internet Engineering Task Force)](https://www.ietf.org/)**
-   - Access to all RFCs (Request for Comments) that define the protocols and extensions mentioned, such as IGMP and MLD.
-
-9. **[Cisco Networking Academy](https://www.netacad.com/)**
-   - Offers detailed educational materials and visual resources on networking layers, encapsulation, and protocol specifications.
+8. <a id="8"></a>**[IETF (Internet Engineering Task Force)](https://www.ietf.org/)**
+9. <a id="9"></a>**[Cisco Networking Academy](https://www.netacad.com/)**
